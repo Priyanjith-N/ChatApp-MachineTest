@@ -22,6 +22,13 @@ export class LoginFormComponent {
     });
   }
 
+  private trimAllWhiteSpaces(): void {
+    Object.keys(this.loginForm.value).forEach((control) => {
+      const trimedValue: string = this.loginForm.get(control)?.value?.trim();
+      this.loginForm.controls[control].setValue(trimedValue);
+    });
+  }
+
   isFormInvalid() {
     const identifier: string | undefined = this.loginForm.value.identifier;
 
@@ -35,6 +42,8 @@ export class LoginFormComponent {
   }
 
   onSubmit() {
+    this.trimAllWhiteSpaces();
+
     if(this.isFormInvalid()) {
       this.loginForm.get('identifier')?.setErrors({ message: "Invalid identifier." });
     }
