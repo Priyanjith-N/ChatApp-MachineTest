@@ -1,4 +1,6 @@
 export enum ErrorField {
     EMAIL = "email",
-    PASSWORD = "password"
+    PASSWORD = "password",
+    USERNAME = "userName",
+    PHONENUMBER = "phoneNumber"
 }

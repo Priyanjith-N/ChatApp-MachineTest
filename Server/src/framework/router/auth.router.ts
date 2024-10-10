@@ -28,4 +28,6 @@ const authController: IAuthController = new AuthController(authUseCase);
 
 router.post("/login", authController.handelLogin.bind(authController));
 
+router.post("/register", authController.handelRegister.bind(authController));
+
 export default router;
