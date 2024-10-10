@@ -4,6 +4,11 @@ import { LoginFormComponent } from './shared/components/auth/login-form/login-fo
 
 export const routes: Routes = [
     {
+        path: "auth",
+        pathMatch: "full",
+        redirectTo: "/auth/login"
+    },
+    {
         path: 'auth',
         component: MainAuthPageComponent,
         children: [
