@@ -9,7 +9,7 @@ if(!dbUrl) {
 
 const connectDB = async () => {
     try {
-        const connect = await mongoose.connect(dbUrl, {dbName: "Chat App"});
+        const connect = await mongoose.connect(dbUrl, {dbName: "Chat_App"});
 
         console.log(`Server connected to host ${connect.connection.host}`);
     } catch (err: any) {
