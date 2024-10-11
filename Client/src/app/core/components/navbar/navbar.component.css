@@ -1,0 +1,3 @@
+.activeNavOption {
+    @apply bg-[#2D2D2D] hover:bg-[#292929];
+}
