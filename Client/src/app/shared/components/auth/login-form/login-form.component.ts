@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 
 // services
@@ -24,6 +24,7 @@ import { IValidationError } from '../../../models/IAPIErrorResponses';
 })
 export class LoginFormComponent {
   private authService: AuthService = inject(AuthService);
+  private router: Router = inject(Router);
 
   loginForm: FormGroup<ILoginForm>;
   isFormSubmited: boolean = false;
@@ -82,6 +83,8 @@ export class LoginFormComponent {
     loginAPIResponse.subscribe({
       next: (res) => {
         this.isFormSubmited = false;
+
+        this.router.navigate(["/"]);
       },
       error: (err) => {
         this.isFormSubmited = false;
