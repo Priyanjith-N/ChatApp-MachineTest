@@ -29,7 +29,7 @@ const userSchema: Schema = new Schema<IUser>({
     },
     about: {
         type: String,
-        default: "Hey there! I am using WhatsApp.",
+        default: "Hey there! I am using Chat App.",
         required: true
     },
     status: {
