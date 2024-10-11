@@ -1,6 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
+
+// services
+import { AuthService } from '../../../../core/services/auth.service';
+
+// interfaces
+import { IUserLoginCredentials } from '../../../models/IAuthCredentials';
+import { ILoginForm } from '../../../models/IFormGroups';
+import { ILoginSucessfullAPIResponse } from '../../../models/IAuthAPIResponses';
+import { IValidationError } from '../../../models/IAPIErrorResponses';
 
 @Component({
   selector: 'app-login-form',
@@ -13,24 +23,34 @@ import { RouterLink } from '@angular/router';
   styleUrl: './login-form.component.css'
 })
 export class LoginFormComponent {
-  loginForm: FormGroup;
+  private authService: AuthService = inject(AuthService);
+
+  loginForm: FormGroup<ILoginForm>;
+  isFormSubmited: boolean = false;
 
   constructor() {
-    this.loginForm = new FormGroup({
-      identifier: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required])
+    this.loginForm = new FormGroup<ILoginForm>({
+      identifier: new FormControl<string | null>('', [Validators.required]),
+      password: new FormControl<string | null>('', [Validators.required])
     });
   }
 
   private trimAllWhiteSpaces(): void {
-    Object.keys(this.loginForm.value).forEach((control) => {
-      const trimedValue: string = this.loginForm.get(control)?.value?.trim();
-      this.loginForm.controls[control].setValue(trimedValue);
+    const controls: (keyof ILoginForm)[] = Object.keys(this.loginForm.controls) as (keyof ILoginForm)[];
+    
+    controls.forEach((control) => {
+      const controlValue = this.loginForm.get(control)?.value;
+
+      // Only trim if the value is a string
+      if (typeof controlValue === 'string') {
+        const trimmedValue: string = controlValue.trim();
+        this.loginForm.controls[control].setValue(trimmedValue);
+      }
     });
   }
 
   isFormInvalid() {
-    const identifier: string | undefined = this.loginForm.value.identifier;
+    const identifier: string | undefined | null = this.loginForm.value.identifier;
 
     if(!identifier) return true;
 
@@ -43,14 +63,35 @@ export class LoginFormComponent {
 
   onSubmit() {
     this.trimAllWhiteSpaces();
-
+    
     if(this.isFormInvalid()) {
       this.loginForm.get('identifier')?.setErrors({ message: "Invalid identifier." });
     }
 
-    if(this.loginForm.invalid) return this.loginForm.markAllAsTouched();
+    if(this.isFormSubmited || this.loginForm.invalid) return this.loginForm.markAllAsTouched();
 
-    console.log(this.loginForm.value);
-    
+    this.isFormSubmited = true;
+
+    const loginCredentials: IUserLoginCredentials = {
+      identifier: this.loginForm.value.identifier!,
+      password: this.loginForm.value.password!
+    }
+
+    const loginAPIResponse: Observable<ILoginSucessfullAPIResponse> = this.authService.handelLogin(loginCredentials);
+
+    loginAPIResponse.subscribe({
+      next: (res) => {
+        this.isFormSubmited = false;
+      },
+      error: (err) => {
+        this.isFormSubmited = false;
+
+        if(err.errorField) {
+          const errObj: IValidationError = err as IValidationError;
+
+          this.loginForm.get(errObj.errorField)?.setErrors({ message: errObj.message });
+        }
+      }
+  });
   }
 }
