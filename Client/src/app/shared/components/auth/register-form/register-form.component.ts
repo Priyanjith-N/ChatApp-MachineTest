@@ -1,6 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
+
+// services
+import { AuthService } from '../../../../core/services/auth.service';
+
+// interfaces
+import { IRegisterForm } from '../../../models/IFormGroups';
+import { IUserRegisterationCredentials } from '../../../models/IAuthCredentials';
+import { IRegisterSucessfullAPIResponse } from '../../../models/IAuthAPIResponses';
+import { IValidationError } from '../../../models/IAPIErrorResponses';
 
 @Component({
   selector: 'app-register-form',
@@ -13,10 +23,13 @@ import { RouterLink } from '@angular/router';
   styleUrl: './register-form.component.css'
 })
 export class RegisterFormComponent {
-  registerForm: FormGroup;
+  private authService: AuthService = inject(AuthService);
+
+  registerForm: FormGroup<IRegisterForm>;
+  isFormSubmited: boolean = false;
 
   constructor() {
-    this.registerForm = new FormGroup({
+    this.registerForm = new FormGroup<IRegisterForm>({
       userName: new FormControl('', [Validators.required]),
       displayName: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email, Validators.pattern(/^[A-Za-z0-9]+@gmail\.com$/)]),
@@ -27,10 +40,15 @@ export class RegisterFormComponent {
   }
 
   private trimAllWhiteSpaces(): void {
-    Object.keys(this.registerForm.value).forEach((control) => {
-      if(control !== "phoneNumber") {
-        const trimedValue: string = this.registerForm.get(control)?.value?.trim();
-        this.registerForm.controls[control]?.setValue(trimedValue);
+    const controls: (keyof IRegisterForm)[] = Object.keys(this.registerForm.controls) as (keyof IRegisterForm)[];
+    
+    controls.forEach((control) => {
+      const controlValue = this.registerForm.get(control)?.value;
+
+      // Only trim if the value is a string
+      if (typeof controlValue === 'string') {
+        const trimmedValue: string = controlValue.trim();
+        this.registerForm.controls[control].setValue(trimmedValue);
       }
     });
   }
@@ -50,8 +68,34 @@ export class RegisterFormComponent {
     this.trimAllWhiteSpaces(); 
     this.bothConfirmPasswordAndPasswordCheck();
 
-    if(this.registerForm.invalid) return this.registerForm.markAllAsTouched();
+    if(this.isFormSubmited || this.registerForm.invalid) return this.registerForm.markAllAsTouched();
 
-    console.log(this.registerForm.value);
+    this.isFormSubmited = true;
+
+    const registerCredentials: IUserRegisterationCredentials = {
+      userName: this.registerForm.value.userName!,
+      displayName: this.registerForm.value.displayName!,
+      email: this.registerForm.value.email!,
+      phoneNumber: this.registerForm.value.phoneNumber!,
+      password: this.registerForm.value.password!,
+      confirmPassword: this.registerForm.value.confirmPassword!
+    }
+
+    const registerAPIResponse: Observable<IRegisterSucessfullAPIResponse> = this.authService.handelRegisteration(registerCredentials);
+
+    registerAPIResponse.subscribe({
+      next: (res) => {
+        this.isFormSubmited = false;
+      },
+      error: ((err: any) => {
+        this.isFormSubmited = false;
+
+        if(err.errorField) {
+          const errObj: IValidationError = err;
+
+          this.registerForm.get(errObj.errorField)?.setErrors({ message: errObj.message });
+        }
+      })
+    });
   }
 }

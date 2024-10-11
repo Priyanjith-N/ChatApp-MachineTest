@@ -78,7 +78,7 @@
                 <div class="relative">
                   <input
                     id="phoneNumber"
-                    type="number"
+                    type="text"
                     formControlName="phoneNumber"
                     placeholder="Enter Phone number"
                     class="mt-2 flex items-center w-full px-5 py-4 mb-7 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl border border-transparent"
@@ -160,7 +160,15 @@
           class="mx-auto w-full px-6 py-5 my-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-blue-500"
           type="submit"
         >
-          Sign Up
+          @if(isFormSubmited) {
+            <div class="flex justify-center items-center">
+              <div class="animate-spin inline-block size-[14px] border-[3px] border-current border-t-transparent text-white rounded-full dark:text-white" role="status" aria-label="loading">
+                <span class="sr-only">Loading...</span>
+              </div>
+          </div>
+          }@else {
+            Sign Up
+          }
         </button>
         <p class="text-center text-sm leading-relaxed text-grey-900">
           Already have an account?
