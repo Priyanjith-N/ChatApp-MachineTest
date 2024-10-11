@@ -45,7 +45,7 @@ export default class AuthController implements IAuthController {
                 userName: req.body.userName,
                 displayName: req.body.displayName,
                 email: req.body.email,
-                phoneNumber: String(req.body.phoneNumber || ""),
+                phoneNumber: req.body.phoneNumber,
                 password: req.body.password,
                 confirmPassword: req.body.confirmPassword
             }

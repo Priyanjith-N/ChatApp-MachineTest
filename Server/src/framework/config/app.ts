@@ -1,4 +1,5 @@
 import express, { Express } from "express";
+import cors from "cors";
 import morgan from "morgan";
 
 import authRouter from "../router/auth.router";
@@ -7,6 +8,12 @@ import authRouter from "../router/auth.router";
 import errorHandler from "../middleware/error.middleware";
 
 const app: Express = express();
+
+const allowedDomainFrontEndDomain: string = process.env.FRONTEND_DOMAIN ?? "";
+
+app.use(cors({
+    origin: [allowedDomainFrontEndDomain]
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
