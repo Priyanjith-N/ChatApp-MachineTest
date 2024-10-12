@@ -3,6 +3,7 @@ import { NavbarComponent } from '../../core/components/navbar/navbar.component';
 import { HeaderComponent } from '../../core/components/header/header.component';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+import { ViewChatMessagesComponent } from '../../shared/components/home/view-chat-messages/view-chat-messages.component';
 
 @Component({
   selector: 'app-home-page',
@@ -10,6 +11,7 @@ import { filter } from 'rxjs';
   imports: [
     HeaderComponent,
     NavbarComponent,
+    ViewChatMessagesComponent,
     RouterOutlet
   ],
   templateUrl: './home-page.component.html',
