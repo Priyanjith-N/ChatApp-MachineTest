@@ -3,6 +3,8 @@ import { MainAuthPageComponent } from './features/auth/main-auth-page/main-auth-
 import { LoginFormComponent } from './shared/components/auth/login-form/login-form.component';
 import { RegisterFormComponent } from './shared/components/auth/register-form/register-form.component';
 import { HomePageComponent } from './features/home-page/home-page.component';
+import { ChatComponent } from './shared/components/home/chat/chat.component';
+import { ViewChatMessagesComponent } from './shared/components/home/view-chat-messages/view-chat-messages.component';
 
 export const routes: Routes = [
     {
@@ -26,9 +28,21 @@ export const routes: Routes = [
     },
     {
         path: '',
+        pathMatch: 'full',
+        redirectTo: '/chat'
+    },
+    {
+        path: '',
         component: HomePageComponent,
         children: [
-            
+            {
+                path: 'chat',
+                component: ChatComponent
+            },
+            {
+                path: 'chat/:roomId',
+                component: ChatComponent
+            }
         ]
     }
 ];

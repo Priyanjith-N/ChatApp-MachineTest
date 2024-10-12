@@ -15,6 +15,6 @@ export class NavbarComponent {
   private router: Router = inject(Router);
   
   isRouteActive(route: string): boolean {
-    return this.router.isActive(route, { paths: "exact", fragment: "ignored", matrixParams: "ignored", queryParams: "ignored" });
+    return this.router.isActive(route, { paths: "subset", fragment: "ignored", matrixParams: "ignored", queryParams: "ignored" });
   }
 }
