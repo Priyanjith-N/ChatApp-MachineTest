@@ -6,6 +6,7 @@ import { HomePageComponent } from './features/home-page/home-page.component';
 import { ChatComponent } from './shared/components/home/chat/chat.component';
 import { ViewChatMessagesComponent } from './shared/components/home/view-chat-messages/view-chat-messages.component';
 import { ProfileComponent } from './shared/components/home/profile/profile.component';
+import { SettingsComponent } from './shared/components/home/settings/settings.component';
 
 export const routes: Routes = [
     {
@@ -47,6 +48,10 @@ export const routes: Routes = [
             {
                 path: 'profile',
                 component: ProfileComponent
+            },
+            {
+                path: 'settings',
+                component: SettingsComponent
             }
         ]
     }
