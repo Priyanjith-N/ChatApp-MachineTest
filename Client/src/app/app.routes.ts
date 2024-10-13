@@ -5,6 +5,7 @@ import { RegisterFormComponent } from './shared/components/auth/register-form/re
 import { HomePageComponent } from './features/home-page/home-page.component';
 import { ChatComponent } from './shared/components/home/chat/chat.component';
 import { ViewChatMessagesComponent } from './shared/components/home/view-chat-messages/view-chat-messages.component';
+import { ProfileComponent } from './shared/components/home/profile/profile.component';
 
 export const routes: Routes = [
     {
@@ -42,6 +43,10 @@ export const routes: Routes = [
             {
                 path: 'chat/:roomId',
                 component: ChatComponent
+            },
+            {
+                path: 'profile',
+                component: ProfileComponent
             }
         ]
     }
