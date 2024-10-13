@@ -1,0 +1,42 @@
+.chatSection::-webkit-scrollbar {
+    width: 3px;
+    border-radius: 999999px;
+}
+
+.chatSection::-webkit-scrollbar-thumb {
+    background: #3A3A3A;
+}
+
+.bubbleRecive::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent #363636 transparent transparent;
+}
+
+.bubble {
+    position: relative;
+    border-radius: 5.07px;
+    border-top-right-radius: 0;
+}
+
+.bubbleRecive {
+    background-color: #353535;
+}
+
+.bubbleSend {
+    background-color: #005C4B;
+}
+
+.bubbleSend::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -11px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent transparent #005C4B;
+}
