@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import cors from "cors";
 import morgan from "morgan";
+import cookieParser from 'cookie-parser';
 
 import authRouter from "../router/auth.router";
 
@@ -14,8 +15,12 @@ const app: Express = express();
 const allowedDomainFrontEndDomain: string = process.env.FRONTEND_DOMAIN ?? "";
 
 app.use(cors({
-    origin: [allowedDomainFrontEndDomain]
+    origin: [allowedDomainFrontEndDomain],
+    credentials: true
 }));
+
+//for parseing cookie data
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

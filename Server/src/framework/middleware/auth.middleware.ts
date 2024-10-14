@@ -21,6 +21,7 @@ export default class AuthMiddleware implements IAuthMiddleware {
     async isAuthenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
         try {
             const { token } = req.cookies;
+            
 
             if(!token) throw new JWTTokenError({ statusCode: StatusCodes.Unauthorized, message: ErrorMessage.NOT_AUTHENTICATED });
 

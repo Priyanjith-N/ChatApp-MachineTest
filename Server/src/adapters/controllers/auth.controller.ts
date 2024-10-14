@@ -28,7 +28,7 @@ export default class AuthController implements IAuthController {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                maxAge: 1 * 24 * 60 * 60
+                maxAge: 1 * 24 * 60 * 60 * 1000
             });
 
             res.status(StatusCodes.Success).json({
@@ -55,7 +55,7 @@ export default class AuthController implements IAuthController {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                maxAge: 1 * 24 * 60 * 60
+                maxAge: 1 * 24 * 60 * 60 * 1000
             });
 
             res.status(StatusCodes.Success).json({
@@ -76,7 +76,7 @@ export default class AuthController implements IAuthController {
                 message: ResponseMessage.USER_AUTHENTICATED
             });
         } catch (err: any) {
-            throw err;
+            next(err);
         }
     }
 }
