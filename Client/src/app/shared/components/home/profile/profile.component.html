@@ -2,14 +2,14 @@
     <p class="font-bold text-xl mb-10">Profile</p>
     <div class="flex-1">
         <div class="mb-4 flex justify-center">
-            <img class="w-[140px] h-auto rounded-full" src="/navbar icons/profileIcon.png" alt="">
+            <img class="w-[140px] h-auto rounded-full" [src]="userProfile?.profilePicture" alt="">
         </div>
         <div class="mb-6">
             <p class="text-[#087E69] text-sm mb-4">Your name</p>
             <div class="flex justify-between items-center mb-4">
-                <p class="text-lg">Priyan</p>
+                <p class="text-lg">{{ userProfile?.displayName }}</p>
                 <div class="cursor-pointer">
-                    <img class="w-[24px] h-auto" src="/icons/edit.png" alt="" >
+                    <img class="w-[24px] h-auto" src="/icons/edit.png" alt="edit pencil" >
                 </div>
             </div>
             <p class="text-[#8696A0] break-words text-sm">This is not your username. This is the name that will be displayed to others.</p>
@@ -17,9 +17,9 @@
         <div>
             <p class="text-[#087E69] mb-4">About</p>
             <div class="flex justify-between items-center">
-                <p>Hey !!</p>
+                <p>{{ userProfile?.about }}</p>
                 <div class="cursor-pointer">
-                    <img class="w-[24px] h-auto" src="/icons/edit.png" alt="" >
+                    <img class="w-[24px] h-auto" src="/icons/edit.png" alt="edit pencil" >
                 </div>
             </div>
         </div>
