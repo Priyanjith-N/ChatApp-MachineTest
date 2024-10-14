@@ -12,9 +12,9 @@ export const authPageAcessGuard: CanActivateFn = (route, state) => {
   const authService: AuthService = inject(AuthService);
   const router: Router = inject(Router);
 
-  const isUserAuthenticatedAPIResponse: Observable<IIsUserAuthenticatedSucessfullAPIResponse> = authService.isUserAuthenticated();
+  const isUserAuthenticatedAPIResponse$: Observable<IIsUserAuthenticatedSucessfullAPIResponse> = authService.isUserAuthenticated();
 
-  return isUserAuthenticatedAPIResponse.pipe(
+  return isUserAuthenticatedAPIResponse$.pipe(
     switchMap(() => {
       router.navigate(["/"]); // dont allow user to navigate login / register route.
 

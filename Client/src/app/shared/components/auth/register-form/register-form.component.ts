@@ -82,9 +82,9 @@ export class RegisterFormComponent {
       confirmPassword: this.registerForm.value.confirmPassword!
     }
 
-    const registerAPIResponse: Observable<IRegisterSucessfullAPIResponse> = this.authService.handelRegisteration(registerCredentials);
+    const registerAPIResponse$: Observable<IRegisterSucessfullAPIResponse> = this.authService.handelRegisteration(registerCredentials);
 
-    registerAPIResponse.subscribe({
+    registerAPIResponse$.subscribe({
       next: (res) => {
         this.isFormSubmited = false;
 

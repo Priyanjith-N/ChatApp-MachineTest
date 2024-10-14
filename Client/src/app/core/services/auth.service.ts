@@ -22,24 +22,24 @@ export class AuthService {
   handelLogin(loginCredentials: IUserLoginCredentials): Observable<ILoginSucessfullAPIResponse> {
     const api: string = `${this.backendDomain}${AuthAPIEndPoint.LOGIN_API}`;
 
-    const loginAPIResponse: Observable<ILoginSucessfullAPIResponse> = this.httpClient.post<ILoginSucessfullAPIResponse>(api, loginCredentials);
+    const loginAPIResponse$: Observable<ILoginSucessfullAPIResponse> = this.httpClient.post<ILoginSucessfullAPIResponse>(api, loginCredentials);
 
-    return loginAPIResponse;
+    return loginAPIResponse$;
   }
 
   handelRegisteration(registerCredentials: IUserRegisterationCredentials): Observable<IRegisterSucessfullAPIResponse> {
     const api: string = `${this.backendDomain}${AuthAPIEndPoint.REGISTER_API}`;
 
-    const registerAPIResponse: Observable<IRegisterSucessfullAPIResponse> = this.httpClient.post<IRegisterSucessfullAPIResponse>(api, registerCredentials);
+    const registerAPIResponse$: Observable<IRegisterSucessfullAPIResponse> = this.httpClient.post<IRegisterSucessfullAPIResponse>(api, registerCredentials);
 
-    return registerAPIResponse;
+    return registerAPIResponse$;
   }
 
   isUserAuthenticated(): Observable<IIsUserAuthenticatedSucessfullAPIResponse> {
     const api: string = `${this.backendDomain}${AuthAPIEndPoint.IS_USER_AUTHENTICATED}`;
 
-    const isUserAuthenticatedAPIResponse: Observable<IIsUserAuthenticatedSucessfullAPIResponse> = this.httpClient.post<IIsUserAuthenticatedSucessfullAPIResponse>(api, {});
+    const isUserAuthenticatedAPIResponse$: Observable<IIsUserAuthenticatedSucessfullAPIResponse> = this.httpClient.post<IIsUserAuthenticatedSucessfullAPIResponse>(api, {});
 
-    return isUserAuthenticatedAPIResponse;
+    return isUserAuthenticatedAPIResponse$;
   }
 }

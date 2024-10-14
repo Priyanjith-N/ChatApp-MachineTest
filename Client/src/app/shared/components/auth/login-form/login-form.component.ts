@@ -78,9 +78,9 @@ export class LoginFormComponent {
       password: this.loginForm.value.password!
     }
 
-    const loginAPIResponse: Observable<ILoginSucessfullAPIResponse> = this.authService.handelLogin(loginCredentials);
+    const loginAPIResponse$: Observable<ILoginSucessfullAPIResponse> = this.authService.handelLogin(loginCredentials);
 
-    loginAPIResponse.subscribe({
+    loginAPIResponse$.subscribe({
       next: (res) => {
         this.isFormSubmited = false;
 
