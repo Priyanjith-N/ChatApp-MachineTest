@@ -23,3 +23,5 @@ export interface IUserRegisterationCredentials {
     password: string;
     confirmPassword: string;
 }
+
+export interface IUserProfile extends Omit<IUser, "password"> { }

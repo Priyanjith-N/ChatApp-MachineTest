@@ -35,6 +35,7 @@ const userSchema: Schema = new Schema<IUser>({
     status: {
         type: String,
         default: "offline",
+        enum: ["online", "offline"],
         required: true
     }
 });
