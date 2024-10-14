@@ -2,5 +2,6 @@ export enum ErrorField {
     EMAIL = "email",
     PASSWORD = "password",
     USERNAME = "userName",
-    PHONENUMBER = "phoneNumber"
+    PHONENUMBER = "phoneNumber",
+    TOKEN = "Token"
 }

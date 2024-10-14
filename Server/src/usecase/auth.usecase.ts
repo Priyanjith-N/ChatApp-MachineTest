@@ -1,16 +1,21 @@
+import { isObjectIdOrHexString } from "mongoose";
+
 // interfaces
 import IUser, { IUserLoginCredentials, IUserRegisterationCredentials } from "../entity/IUser.entity";
-import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
-import ValidationError from "../errors/validationErrorDetails.error";
 import IAuthRepository from "../interface/repositories/IAuth.repository";
 import IAuthUseCase from "../interface/usecase/IAuth.usecase";
+import IHashingService from "../interface/utils/IHashingService";
+import IJWTService, { IPayload } from "../interface/utils/IJWTService";
+
+// errors
+import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
+import ValidationError from "../errors/validationErrorDetails.error";
+import JWTTokenError from "../errors/jwtTokenError.error";
 
 // enums
 import { ErrorField } from "../enums/errorField.enum";
 import { ErrorMessage } from "../enums/errorMesaage.enum";
 import { StatusCodes } from "../enums/statusCode.enum";
-import IHashingService from "../interface/utils/IHashingService";
-import IJWTService, { IPayload } from "../interface/utils/IJWTService";
 
 export default class AuthUseCase implements IAuthUseCase {
     private authRepository: IAuthRepository;
@@ -72,6 +77,22 @@ export default class AuthUseCase implements IAuthUseCase {
             const acessToken: string  = this.jwtService.sign(payLoad, "1d");
 
             return acessToken;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async isUserAuthenticated(token: string | undefined): Promise<void | never> {
+        try {
+            if(!token) throw new JWTTokenError({ statusCode: StatusCodes.Unauthorized, message: ErrorMessage.NOT_AUTHENTICATED });
+
+            try {
+                const decoded: IPayload = this.jwtService.verifyToken(token);
+
+                if(!isObjectIdOrHexString(decoded.id)) throw new JWTTokenError({ statusCode: StatusCodes.Unauthorized, message: ErrorMessage.NOT_AUTHENTICATED });
+            } catch (err: any) {
+                throw new JWTTokenError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.TOKEN_EXPIRED });
+            }
         } catch (err: any) {
             throw err;
         }

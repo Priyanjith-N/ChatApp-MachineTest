@@ -4,4 +4,5 @@ import { IUserLoginCredentials, IUserRegisterationCredentials } from "../../enti
 export default interface IAuthUseCase {
     userLogin(userLoginCredential: IUserLoginCredentials): Promise<string | never>;
     userRegister(userRegisterationCredentials: IUserRegisterationCredentials): Promise<string | never>;
+    isUserAuthenticated(token: string | undefined): Promise<void | never>;
 }

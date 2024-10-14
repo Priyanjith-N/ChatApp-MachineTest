@@ -4,5 +4,7 @@ export enum ErrorMessage {
     INTERNAL_SERVER_ERROR = "Internal Server Error.",
     USERNAME_ALREADY_TAKEN = "Username already taken.",
     EMAIL_ALREADY_TAKEN = "Email already taken.",
-    PHONENUMBER_ALREADY_TAKEN = "Phonenumber already taken."
+    PHONENUMBER_ALREADY_TAKEN = "Phonenumber already taken.",
+    NOT_AUTHENTICATED = "Not authenticated.",
+    TOKEN_EXPIRED = "Token expired."
 }

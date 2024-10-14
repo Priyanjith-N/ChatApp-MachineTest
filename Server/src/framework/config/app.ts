@@ -4,6 +4,8 @@ import morgan from "morgan";
 
 import authRouter from "../router/auth.router";
 
+import userRouter from "../router/user.router";
+
 // error handling middleware
 import errorHandler from "../middleware/error.middleware";
 
@@ -21,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // Loging all http requests in detail
 
 app.use("/auth", authRouter);
+
+app.use("/api", userRouter);
 
 app.use(errorHandler) // using error handling middleware
 

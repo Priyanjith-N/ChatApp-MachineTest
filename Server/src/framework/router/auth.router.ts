@@ -30,4 +30,6 @@ router.post("/login", authController.handelLogin.bind(authController));
 
 router.post("/register", authController.handelRegister.bind(authController));
 
+router.post("/isuserauthenticated", authController.isUserAuthenticated.bind(authController));
+
 export default router;

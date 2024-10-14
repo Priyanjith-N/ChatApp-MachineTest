@@ -65,4 +65,18 @@ export default class AuthController implements IAuthController {
             next(err);
         }
     }
+
+    async isUserAuthenticated(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { token } = req.cookies;
+
+            await this.authUseCase.isUserAuthenticated(token);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.USER_AUTHENTICATED
+            });
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }
