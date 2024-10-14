@@ -4,9 +4,12 @@ import { LoginFormComponent } from './shared/components/auth/login-form/login-fo
 import { RegisterFormComponent } from './shared/components/auth/register-form/register-form.component';
 import { HomePageComponent } from './features/home-page/home-page.component';
 import { ChatComponent } from './shared/components/home/chat/chat.component';
-import { ViewChatMessagesComponent } from './shared/components/home/view-chat-messages/view-chat-messages.component';
 import { ProfileComponent } from './shared/components/home/profile/profile.component';
 import { SettingsComponent } from './shared/components/home/settings/settings.component';
+
+// guards
+import { authGuard } from './core/guards/auth.guard';
+import { authPageAcessGuard } from './core/guards/auth-page-acess.guard';
 
 export const routes: Routes = [
     {
@@ -16,6 +19,7 @@ export const routes: Routes = [
     },
     {
         path: "auth",
+        canActivate: [authPageAcessGuard],
         component: MainAuthPageComponent,
         children: [
             {
@@ -35,6 +39,7 @@ export const routes: Routes = [
     },
     {
         path: '',
+        canActivate: [authGuard],
         component: HomePageComponent,
         children: [
             {

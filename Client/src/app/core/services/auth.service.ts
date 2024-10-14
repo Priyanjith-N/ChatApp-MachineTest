@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment'; // acessing env
 import { AuthAPIEndPoint } from '../enums/authAPIEndPoint';
 
 // interfaces
-import { ILoginSucessfullAPIResponse, IRegisterSucessfullAPIResponse } from '../../shared/models/IAuthAPIResponses';
+import { IIsUserAuthenticatedSucessfullAPIResponse, ILoginSucessfullAPIResponse, IRegisterSucessfullAPIResponse } from '../../shared/models/IAuthAPIResponses';
 import { IUserLoginCredentials, IUserRegisterationCredentials } from '../../shared/models/IAuthCredentials';
 
 @Injectable({
@@ -33,5 +33,13 @@ export class AuthService {
     const registerAPIResponse: Observable<IRegisterSucessfullAPIResponse> = this.httpClient.post<IRegisterSucessfullAPIResponse>(api, registerCredentials);
 
     return registerAPIResponse;
+  }
+
+  isUserAuthenticated(): Observable<IIsUserAuthenticatedSucessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${AuthAPIEndPoint.IS_USER_AUTHENTICATED}`;
+
+    const isUserAuthenticatedAPIResponse: Observable<IIsUserAuthenticatedSucessfullAPIResponse> = this.httpClient.post<IIsUserAuthenticatedSucessfullAPIResponse>(api, {});
+
+    return isUserAuthenticatedAPIResponse;
   }
 }
