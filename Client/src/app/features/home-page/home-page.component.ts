@@ -3,7 +3,18 @@ import { NavbarComponent } from '../../core/components/navbar/navbar.component';
 import { HeaderComponent } from '../../core/components/header/header.component';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+
+// components
 import { ViewChatMessagesComponent } from '../../shared/components/home/view-chat-messages/view-chat-messages.component';
+
+// services
+import { SocketIoService } from '../../core/services/socket-io.service';
+
+// enums
+import { ChatEventEnum } from '../../core/constants/socketEvents.constants';
+
+// interfaces
+import { IJWTAuthError } from '../../shared/models/ISocketEventResponse';
 
 @Component({
   selector: 'app-home-page',
@@ -20,6 +31,7 @@ import { ViewChatMessagesComponent } from '../../shared/components/home/view-cha
 export class HomePageComponent implements OnInit {
   private router: Router = inject(Router);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private socketioService: SocketIoService = inject(SocketIoService);
 
   chatRoomId: string | null = null;
 
@@ -31,6 +43,13 @@ export class HomePageComponent implements OnInit {
       });
 
     this.updateChatRoomId();
+
+    this.socketioService.on<IJWTAuthError | Error>(ChatEventEnum.SOCKET_ERROR_EVENT).subscribe({
+      next: () => {
+        this.router.navigate(["/auth/login"]);
+      },
+      error: () => {  }
+    });
   }
 
   private updateChatRoomId() {

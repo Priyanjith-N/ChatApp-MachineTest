@@ -9,3 +9,8 @@ export interface IGetUserProfileSuccessfullAPIResponse {
 export interface ILogoutSuccessfullAPIResponse {
     message: string;
 }
+
+export interface IGetAllUserProfileSuccessfullAPIResponse {
+    message: string;
+    data: IUserProfile[];
+}

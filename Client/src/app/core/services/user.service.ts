@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment'; // acessing env
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
-import { IGetUserProfileSuccessfullAPIResponse, ILogoutSuccessfullAPIResponse } from '../../shared/models/IUserAPIResponses';
+import { IGetAllUserProfileSuccessfullAPIResponse, IGetUserProfileSuccessfullAPIResponse, ILogoutSuccessfullAPIResponse } from '../../shared/models/IUserAPIResponses';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +30,13 @@ export class UserService {
     const logoutAPIResponse$: Observable<ILogoutSuccessfullAPIResponse> = this.httpClient.post<ILogoutSuccessfullAPIResponse>(api, {});
 
     return logoutAPIResponse$;
+  }
+
+  getAllUsers(): Observable<IGetAllUserProfileSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.GET_ALL_USERS}`;
+
+    const getAllUsersAPIResponse$: Observable<IGetAllUserProfileSuccessfullAPIResponse> = this.httpClient.get<IGetAllUserProfileSuccessfullAPIResponse>(api);
+
+    return getAllUsersAPIResponse$;
   }
 }
