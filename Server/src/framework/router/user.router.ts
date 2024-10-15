@@ -34,4 +34,6 @@ router.get("/user", userController.getUserProfile.bind(userController));
 
 router.post("/logout", userController.handelLogout.bind(userController));
 
+router.get("/allusers", userController.getAllUsers.bind(userController));
+
 export default router;

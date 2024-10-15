@@ -38,4 +38,14 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async getAllUser(id: string | undefined): Promise<IUserProfile[]> {
+        try {
+            if(!id || !isObjectIdOrHexString(id)) throw new RequiredCredentialsNotGiven('Provide all required details.');
+            
+            return await this.userRepository.getAllUsers(id);
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

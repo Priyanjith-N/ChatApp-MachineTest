@@ -45,4 +45,17 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async getAllUsers(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const allUsers: IUserProfile[] = await this.userUseCase.getAllUser(req.id);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data: allUsers
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }

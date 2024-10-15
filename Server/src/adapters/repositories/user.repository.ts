@@ -21,4 +21,12 @@ export default class UserRepository implements IUserRepositroy {
             throw err;
         }
     }
+
+    async getAllUsers(_id: string): Promise<IUserProfile[]> {
+        try {
+            return await Users.find({ _id: { $ne: _id } }, { password: 0 });
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }
