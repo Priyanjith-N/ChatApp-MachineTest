@@ -24,8 +24,12 @@ const ChatSchema: Schema = new Schema(
         groupName: { 
             type: String
         },
+        groupProfilePicture: {
+            type: String
+        },
         lastMessage: {
-            type: Schema.Types.ObjectId
+            type: Schema.Types.ObjectId,
+            default: null
         },
         groupAdmin: {
             type: Schema.Types.ObjectId

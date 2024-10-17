@@ -12,7 +12,6 @@ import { ChatEventEnum } from "../../constants/socketEvents.constants";
 // interfaces
 import JWTTokenError from "../../errors/jwtTokenError.error";
 import IJWTService, { IPayload } from "../../interface/utils/IJWTService";
-import IUserRepositroy from "../../interface/repositories/user.repository";
 
 // enums
 import { StatusCodes } from "../../enums/statusCode.enum";
@@ -22,10 +21,6 @@ import { ErrorMessage } from "../../enums/errorMesaage.enum";
 import JWTService from "./jwtService.utils";
 
 // importing classes
-import UserRepository from "../../adapters/repositories/user.repository";
-import { IUserProfile } from "../../entity/IUser.entity";
-
-const userRepository: IUserRepositroy = new UserRepository();
 
 const jwtService: IJWTService = new JWTService();
 
@@ -33,7 +28,7 @@ interface IAuthSocket extends Socket {
     userId?: string;
 }
 
-export default function connectSocket(httpServer: http.Server) {
+export function connectSocket(httpServer: http.Server) {
 
     const io = new Server(httpServer, {
         pingTimeout: 60000,
@@ -42,7 +37,6 @@ export default function connectSocket(httpServer: http.Server) {
             credentials: true
         }
     });
-
     
     io.use((socket: IAuthSocket, next) => {
         try {
@@ -69,7 +63,7 @@ export default function connectSocket(httpServer: http.Server) {
             next(err);
         } 
     });
-    
+
     io.on(ChatEventEnum.CONNECTION, async (socket: IAuthSocket) => {
         socket.join(socket.userId!);
         
@@ -77,4 +71,9 @@ export default function connectSocket(httpServer: http.Server) {
             // disconneted
         });
     });
+
+
+    return function emitSocketEvent<T>(roomId: string, event: string, payload: T) {
+        io.in(roomId).emit(event, payload);
+    }
 }

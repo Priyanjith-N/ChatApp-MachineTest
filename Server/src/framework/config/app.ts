@@ -10,7 +10,6 @@ import userRouter from "../router/user.router";
 
 // error handling middleware
 import errorHandler from "../middleware/error.middleware";
-import connectSocket from "../utils/socket.utils";
 
 const app: Express = express();
 

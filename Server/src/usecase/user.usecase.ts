@@ -7,6 +7,11 @@ import IUserUseCase from "../interface/usecase/IUser.usecase";
 
 // errrors
 import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
+import { IChat, IChatWithParticipantDetails } from "../entity/IChat.entity";
+import { ChatEventEnum } from "../constants/socketEvents.constants";
+
+// socket
+import emitSocketEvent from "../server";
 
 export default class UserUseCase implements IUserUseCase {
     private userRepository: IUserRepositroy;
@@ -44,6 +49,26 @@ export default class UserUseCase implements IUserUseCase {
             if(!id || !isObjectIdOrHexString(id)) throw new RequiredCredentialsNotGiven('Provide all required details.');
             
             return await this.userRepository.getAllUsers(id);
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async createNewChat(senderId: string | undefined, reciverId: string | undefined): Promise<IChatWithParticipantDetails | never> {
+        try {
+            if(!senderId || !isObjectIdOrHexString(senderId) || !reciverId || !isObjectIdOrHexString(reciverId) || senderId === reciverId) throw new RequiredCredentialsNotGiven('Provide all required details.');
+
+            const chat: IChatWithParticipantDetails | undefined = await this.userRepository.isChatExisit(senderId, reciverId);
+
+            if(chat) return chat;
+
+            const newChat: IChat = await this.userRepository.createNewChat(senderId, reciverId);
+
+            const createdChat: IChatWithParticipantDetails = await this.userRepository.getChatByIdWithParticipantDetails(newChat._id, senderId);
+
+            emitSocketEvent<IChatWithParticipantDetails>(reciverId, ChatEventEnum.NEW_CHAT_EVENT, createdChat);
+
+            return createdChat;
         } catch (err: any) {
             throw err;
         }

@@ -36,4 +36,6 @@ router.post("/logout", userController.handelLogout.bind(userController));
 
 router.get("/allusers", userController.getAllUsers.bind(userController));
 
+router.post("/createnewchat", userController.createNewChat.bind(userController));
+
 export default router;

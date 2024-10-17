@@ -8,6 +8,7 @@ import { IUserProfile } from "../../entity/IUser.entity";
 // enums
 import { StatusCodes } from "../../enums/statusCode.enum";
 import { ResponseMessage } from "../../enums/responseMessage.enum";
+import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
 
 export default class UserController implements IUserController {
     private userUseCase: IUserUseCase;
@@ -53,6 +54,22 @@ export default class UserController implements IUserController {
             res.status(StatusCodes.Success).json({
                 message: ResponseMessage.SUCESSFULL,
                 data: allUsers
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
+
+    async createNewChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const senderId: string | undefined = req.id;
+            const reciverId: string | undefined = req.body.reciverId;
+            
+            const chat: IChatWithParticipantDetails = await this.userUseCase.createNewChat(senderId, reciverId);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data: chat
             });
         } catch (err: any) {
             next(err);
