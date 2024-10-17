@@ -5,3 +5,7 @@
 .chatSection::-webkit-scrollbar-thumb {
     background: #3A3A3A;
 }
+
+.activeChat {
+    @apply hover:bg-[#515151] bg-[#454545]
+}
