@@ -136,7 +136,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
           this.displayChatLists = this.chatListsData;
         }
 
-        this.router.navigate(["/chat", chat._id]);
+        this.router.navigate(["/chat", chat.chatId], { state: { chat } });
       },
       error: (err) => { 
         this.newChatOrGroupChatModal = false;
