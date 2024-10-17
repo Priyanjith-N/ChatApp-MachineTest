@@ -109,4 +109,22 @@ export default class UserRepository implements IUserRepositroy {
             throw err;
         }
     }
+
+    async getAllChatsOfCurrentUser(_id: string): Promise<IChatWithParticipantDetails[] | never> {
+        try {
+            const chat: IChatWithParticipantDetails[] = await Chats.aggregate([
+                {
+                    $match: {
+                        participants: { $elemMatch: { $eq: new mongoose.Types.ObjectId(_id) } },
+                        lastMessage: { $ne: null }
+                    }
+                },
+                ...this.commonAggratePiplineForChat()
+            ]);
+
+            return chat;
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

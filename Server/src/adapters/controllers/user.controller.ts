@@ -75,4 +75,17 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async getAllChatsOfCurrentUser(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const data: IChatWithParticipantDetails[] = await this.userUseCase.getAllChatsOfCurrentUser(req.id);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }

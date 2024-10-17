@@ -73,4 +73,14 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async getAllChatsOfCurrentUser(_id: string | undefined): Promise<IChatWithParticipantDetails[] | never> {
+        try {
+            if(!_id || !isObjectIdOrHexString(_id)) throw new RequiredCredentialsNotGiven('Provide all required details.');
+
+            return await this.userRepository.getAllChatsOfCurrentUser(_id);
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

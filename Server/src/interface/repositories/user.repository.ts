@@ -9,4 +9,5 @@ export default interface IUserRepositroy {
     isChatExisit(senderId: string, reciverId: string): Promise<IChatWithParticipantDetails | undefined | never>;
     createNewChat(senderId: string, reciverId: string): Promise<IChat| never>;
     getChatByIdWithParticipantDetails(id: string, senderId: string): Promise<IChatWithParticipantDetails | never>;
+    getAllChatsOfCurrentUser(_id: string): Promise<IChatWithParticipantDetails[] | never>;
 }

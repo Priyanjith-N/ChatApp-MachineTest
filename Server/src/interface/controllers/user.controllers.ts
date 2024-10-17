@@ -7,4 +7,5 @@ export default interface IUserController {
     handelLogout(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     getAllUsers(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     createNewChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    getAllChatsOfCurrentUser(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 }
