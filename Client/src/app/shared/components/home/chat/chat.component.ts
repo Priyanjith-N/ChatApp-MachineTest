@@ -50,12 +50,14 @@ export class ChatComponent implements AfterViewInit, OnInit {
       next: (chat) => {
         this.newChatOrGroupChatModal = false;
 
-        if(!chat.lastMessage) {
+        const isChatExist = this.chatListsData.find((presentChat) => presentChat._id === chat._id);
+
+        if(!isChatExist) {
           this.chatListsData = [chat, ...this.chatListsData];
           this.displayChatLists = this.chatListsData;
-        }else{
-          this.router.navigate(["/chat", chat._id]);
         }
+
+        this.router.navigate(["/chat", chat._id]);
       },
       error: (err) => { 
         this.newChatOrGroupChatModal = false;
@@ -111,7 +113,9 @@ export class ChatComponent implements AfterViewInit, OnInit {
         this.newChatOrGroupChatModal = false;
         const chat = res.data;
 
-        if(!chat.lastMessage) {
+        const isChatExist = this.chatListsData.find((presentChat) => presentChat._id === chat._id);
+
+        if(!isChatExist) {
           this.chatListsData = [chat, ...this.chatListsData];
           this.displayChatLists = this.chatListsData;
         }
