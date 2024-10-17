@@ -17,6 +17,10 @@ export class SocketIoService {
     });
   }
 
+  emit<T>(event: string, payload: T) {
+    this.socketio.emit(event, payload);
+  }
+
   on<T>(event: string): Observable<T> {
     return new Observable<T>(observer => {
       this.socketio.on(event, (response: T) => {
