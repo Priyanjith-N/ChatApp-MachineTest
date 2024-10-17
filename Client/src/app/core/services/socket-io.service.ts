@@ -20,7 +20,7 @@ export class SocketIoService {
   on<T>(event: string): Observable<T> {
     return new Observable<T>(observer => {
       this.socketio.on(event, (response: T) => {
-         observer.next(response);
+        observer.next(response);
       });
     });
   }

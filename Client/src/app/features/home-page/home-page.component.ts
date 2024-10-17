@@ -45,10 +45,15 @@ export class HomePageComponent implements OnInit {
     this.updateChatRoomId();
 
     this.socketioService.on<IJWTAuthError | Error>(ChatEventEnum.SOCKET_ERROR_EVENT).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log(res);
+        
         this.router.navigate(["/auth/login"]);
       },
-      error: () => {  }
+      error: (err) => { 
+        console.log(err);
+        
+      }
     });
   }
 
