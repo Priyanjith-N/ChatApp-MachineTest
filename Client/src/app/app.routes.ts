@@ -10,6 +10,8 @@ import { SettingsComponent } from './shared/components/home/settings/settings.co
 // guards
 import { authGuard } from './core/guards/auth.guard';
 import { authPageAcessGuard } from './core/guards/auth-page-acess.guard';
+import { ViewChatMessagesComponent } from './shared/components/home/view-chat-messages/view-chat-messages.component';
+import { DefaultViewChatMessageComponent } from './shared/components/home/default-view-chat-message/default-view-chat-message.component';
 
 export const routes: Routes = [
     {
@@ -44,11 +46,17 @@ export const routes: Routes = [
         children: [
             {
                 path: 'chat',
-                component: ChatComponent
-            },
-            {
-                path: 'chat/:roomId',
-                component: ChatComponent
+                component: ChatComponent,
+                children: [
+                    {
+                        path: '',
+                        component: DefaultViewChatMessageComponent
+                    },
+                    {
+                        path: ':roomId',
+                        component: ViewChatMessagesComponent
+                    },
+                ]
             },
             {
                 path: 'profile',

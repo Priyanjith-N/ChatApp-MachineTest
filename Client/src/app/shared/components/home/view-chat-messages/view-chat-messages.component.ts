@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-view-chat-messages',
@@ -7,10 +8,12 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './view-chat-messages.component.html',
   styleUrl: './view-chat-messages.component.css'
 })
-export class ViewChatMessagesComponent implements OnInit {
-  @Input({ required: true }) roomId: string = "";
+export class ViewChatMessagesComponent {
+  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  
+  private roomId: string;
 
-  ngOnInit(): void {
-    console.log(this.roomId, "In view message component");
+  constructor() {
+    this.roomId = this.activatedRoute.snapshot.params['roomId'];
   }
 }

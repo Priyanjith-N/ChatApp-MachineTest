@@ -1,8 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../core/components/navbar/navbar.component';
 import { HeaderComponent } from '../../core/components/header/header.component';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
+import { Router, RouterOutlet } from '@angular/router';
 
 // components
 import { ViewChatMessagesComponent } from '../../shared/components/home/view-chat-messages/view-chat-messages.component';
@@ -30,20 +29,9 @@ import { IJWTAuthError } from '../../shared/models/ISocketEventResponse';
 })
 export class HomePageComponent implements OnInit {
   private router: Router = inject(Router);
-  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private socketioService: SocketIoService = inject(SocketIoService);
 
-  chatRoomId: string | null = null;
-
   ngOnInit() {
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.updateChatRoomId();
-      });
-
-    this.updateChatRoomId();
-
     this.socketioService.on<IJWTAuthError | Error>(ChatEventEnum.SOCKET_ERROR_EVENT).subscribe({
       next: (res) => {
         console.log(res);
@@ -55,14 +43,5 @@ export class HomePageComponent implements OnInit {
         
       }
     });
-  }
-
-  private updateChatRoomId() {
-    const childRoute = this.activatedRoute.firstChild;
-    if (childRoute) {
-      childRoute.paramMap.subscribe(params => {
-        this.chatRoomId = params.get('roomId');
-      });
-    }
   }
 }

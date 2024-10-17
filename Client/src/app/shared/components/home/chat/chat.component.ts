@@ -12,7 +12,7 @@ import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserA
 import { ICreateNewChatSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
 
@@ -21,7 +21,8 @@ import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-da
   standalone: true,
   imports: [
     FormateTimePipe,
-    GetReciverProfileDataPipe
+    GetReciverProfileDataPipe,
+    RouterOutlet
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
