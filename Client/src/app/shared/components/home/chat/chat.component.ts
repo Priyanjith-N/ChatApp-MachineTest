@@ -9,7 +9,7 @@ import { SocketIoService } from '../../../../core/services/socket-io.service';
 // interfacess
 import { IUserProfile } from '../../../models/user.entity';
 import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
-import { ICreateNewChatSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { Router, RouterOutlet } from '@angular/router';
@@ -45,6 +45,22 @@ export class ChatComponent implements AfterViewInit, OnInit {
   private listOfUsersData: IUserProfile[] = [];
   displayListOfUsers: IUserProfile[] = [];
 
+  constructor() {
+    this.getAllChats();
+  }
+
+  private getAllChats() {
+    const getALLChatsAPIResponse$: Observable<IGetAllChatsSuccessfullAPIResponse> = this.chatService.getAllChats();
+
+    getALLChatsAPIResponse$.subscribe({
+      next: (res) => {
+        this.chatListsData = res.data;
+        this.displayChatLists = this.chatListsData;
+      },
+      error: (err) => {  }
+    })
+  }
+
   ngOnInit(): void {
     this.socketIoService.on<IChatWithParticipantDetails>(ChatEventEnum.NEW_CHAT_EVENT).subscribe({
       next: (chat) => {
@@ -52,12 +68,15 @@ export class ChatComponent implements AfterViewInit, OnInit {
 
         const isChatExist = this.chatListsData.find((presentChat) => presentChat._id === chat._id);
 
-        if(!isChatExist) {
+        if(!isChatExist && chat.lastMessage) {
           this.chatListsData = [chat, ...this.chatListsData];
           this.displayChatLists = this.chatListsData;
         }
 
-        this.router.navigate(["/chat", chat._id]);
+        if(chat.lastMessage) {
+          this.router.navigate(["/chat", chat._id]);
+        }
+
       },
       error: (err) => { 
         this.newChatOrGroupChatModal = false;

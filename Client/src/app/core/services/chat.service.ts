@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; // acessing environment variables
 
 // interfaces
-import { ICreateNewChatSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
@@ -24,5 +24,13 @@ export class ChatService {
     const createNewChatAPIResponse$: Observable<ICreateNewChatSuccessfullAPIResponse> = this.httpClient.post<ICreateNewChatSuccessfullAPIResponse>(api, { reciverId });
 
     return createNewChatAPIResponse$;
+  }
+
+  getAllChats(): Observable<IGetAllChatsSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.GET_ALL_CHATS}`;
+
+    const getALLChatsAPIResponse$: Observable<IGetAllChatsSuccessfullAPIResponse> = this.httpClient.get<IGetAllChatsSuccessfullAPIResponse>(api);
+
+    return getALLChatsAPIResponse$;
   }
 }
