@@ -9,6 +9,24 @@ import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
 import mongoose from "mongoose";
 
 export default class UserRepository implements IUserRepositroy {
+    private commonAggratePiplineForChat() {
+        return [
+            {
+                $lookup: {
+                  from: 'users', 
+                  localField: 'participants', 
+                  foreignField: '_id', 
+                  as: 'participantsData'
+                }
+            },
+            {
+                $project: {
+                    "participantsData.password": 0
+                }
+            }
+        ]
+    }
+
     async getUserProfile(id: string): Promise<IUserProfile | null | never> {
         try {
             return await Users.findOne({ _id: id }, { password: 0 });
@@ -49,29 +67,7 @@ export default class UserRepository implements IUserRepositroy {
                         ]
                     }
                 },
-                {
-                    $project: {
-                        chatId: 1,
-                        type: 1,
-                        lastMessage: 1,
-                        createdAt: 1,
-                        participants: {
-                            $filter: {
-                                input: "$participants",
-                                as: "participant",
-                                cond: { $ne: ["$$participant", new mongoose.Types.ObjectId(senderId)] }
-                            }
-                        }
-                    }
-                },
-                {
-                    $lookup: {
-                      from: 'users', 
-                      localField: 'participants', 
-                      foreignField: '_id', 
-                      as: 'participantsData'
-                    }
-                }
+                ...this.commonAggratePiplineForChat()
             ]);
 
             return chat[0];
@@ -105,19 +101,7 @@ export default class UserRepository implements IUserRepositroy {
                         _id: new mongoose.Types.ObjectId(id)
                     }
                 },
-                {
-                    $lookup: {
-                      from: 'users', 
-                      localField: 'participants', 
-                      foreignField: '_id', 
-                      as: 'participantsData'
-                    }
-                },
-                {
-                    $project: {
-                        "participantsData.password": 0
-                    }
-                }
+                ...this.commonAggratePiplineForChat()
             ]);
 
             return chat[0];
