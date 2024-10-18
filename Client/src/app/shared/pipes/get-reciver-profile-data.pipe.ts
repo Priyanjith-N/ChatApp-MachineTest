@@ -16,7 +16,9 @@ export class GetReciverProfileDataPipe implements PipeTransform {
   private UserProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private router: Router = inject(Router);
 
-  transform(value: IUserProfile[]): IUserProfile | null {
+  transform(value: IUserProfile[] | undefined): IUserProfile | null | undefined {
+    if(!value) return;
+
     if(this.UserProfileManagementService.isNull()) {
       this.router.navigate(["/auth/login"]);
       return null;
