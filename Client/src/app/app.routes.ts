@@ -26,10 +26,12 @@ export const routes: Routes = [
         children: [
             {
                 path: "login",
+                canActivate: [authPageAcessGuard],
                 component: LoginFormComponent
             },
             {
                 path: "register",
+                canActivate: [authPageAcessGuard],
                 component: RegisterFormComponent
             }
         ]
@@ -46,24 +48,29 @@ export const routes: Routes = [
         children: [
             {
                 path: 'chat',
+                canActivate: [authGuard],
                 component: ChatComponent,
                 children: [
                     {
                         path: '',
+                        canActivate: [authGuard],
                         component: DefaultViewChatMessageComponent
                     },
                     {
                         path: ':roomId',
+                        canActivate: [authGuard],
                         component: ViewChatMessagesComponent
                     },
                 ]
             },
             {
                 path: 'profile',
+                canActivate: [authGuard],
                 component: ProfileComponent
             },
             {
                 path: 'settings',
+                canActivate: [authGuard],
                 component: SettingsComponent
             }
         ]
