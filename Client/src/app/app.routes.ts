@@ -66,12 +66,26 @@ export const routes: Routes = [
             {
                 path: 'profile',
                 canActivate: [authGuard],
-                component: ProfileComponent
+                component: ProfileComponent,
+                children: [
+                    {
+                        path: '',
+                        canActivate: [authGuard],
+                        component: DefaultViewChatMessageComponent
+                    }
+                ]
             },
             {
                 path: 'settings',
                 canActivate: [authGuard],
-                component: SettingsComponent
+                component: SettingsComponent,
+                children: [
+                    {
+                        path: '',
+                        canActivate: [authGuard],
+                        component: DefaultViewChatMessageComponent
+                    }
+                ]
             }
         ]
     }

@@ -5,11 +5,14 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 
 // interfaces
 import { IUserProfile } from '../../../models/user.entity';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [],
+  imports: [
+    RouterOutlet
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

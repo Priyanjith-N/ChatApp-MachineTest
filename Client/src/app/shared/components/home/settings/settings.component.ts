@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 
 // service
@@ -14,7 +14,8 @@ import { IUserProfile } from '../../../models/user.entity';
   selector: 'app-settings',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    RouterOutlet
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'

@@ -77,6 +77,7 @@
                                     }@else {
                                         <p class="font-medium">{{ (chat.participantsData | getReciverProfileData)?.displayName }}</p>
                                     }
+
                                     @if(chat.lastMessage) {
                                         <p class="text-[12px] text-[#CFCFCF]">{{ chat.lastMessageData.createdAt | formateTime }}</p>
                                     }
@@ -85,7 +86,7 @@
                                     <div class="flex justify-between items-center">
                                         <div class="flex items-center gap-1.5">
                                             <div>
-                                                @if(true) {
+                                                @if(chat.lastMessageData.isRead) {
                                                     <img class="w-[18px] h-auto" src="/icons/readMeassage.png" alt="tick">
                                                 }@else {
                                                     <img class="w-[18px] h-auto" src="/icons/norReadMessage.png" alt="tick">
