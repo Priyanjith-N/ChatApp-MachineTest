@@ -9,7 +9,7 @@ import Messages from "../../framework/models/message.model";
 import IUserRepositroy from "../../interface/repositories/user.repository";
 import { IUserProfile } from "../../entity/IUser.entity";
 import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
-import { IMessage, IMessageCredentials, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
+import { IMessage, IMessageCredentials, IMessagesGroupedByDate, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
 
 export default class UserRepository implements IUserRepositroy {
     private commonAggratePiplineForChat() {
@@ -185,16 +185,45 @@ export default class UserRepository implements IUserRepositroy {
         }
     }
 
-    async getAllMessagesWithChatId(chatId: string): Promise<IMessageWithSenderDetails[] | never> {
+    async getAllMessagesWithChatId(chatId: string): Promise<IMessagesGroupedByDate[] | never> {
         try {
-            return Messages.aggregate([
+            return await Messages.aggregate([
                 {
                     $match: {
-                        chatId
+                        chatId: new mongoose.Types.ObjectId(chatId)
                     }
                 },
-                ...this.commonAggratePiplineForMessage()
-            ])
+                ...this.commonAggratePiplineForMessage(), 
+                {
+                    $group: {
+                      _id: {
+                        day: {
+                          $dayOfMonth: '$createdAt'
+                        }, 
+                        month: {
+                          $dateToString: {
+                            format: '%B', 
+                            date: '$createdAt'
+                          }
+                        }, 
+                        year: {
+                          $year: '$createdAt'
+                        }
+                      }, 
+                      createdAt: {
+                        $first: '$createdAt'
+                      }, 
+                      messages: {
+                        $push: '$$ROOT'
+                      }
+                    }
+                }, 
+                {
+                    $project: {
+                      _id: 0
+                    }
+                }
+            ]);
         } catch (err: any) {
            throw err; 
         }

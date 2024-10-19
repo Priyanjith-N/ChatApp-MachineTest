@@ -15,8 +15,13 @@ export interface IMessageWithSenderDetails extends IMessage {
     senderData: IUserProfile;
 }
 
-export interface IMessagesAndChatData {
+export interface IMessagesGroupedByDate {
+    createdAt: Date;
     messages: IMessageWithSenderDetails[];
+}
+
+export interface IMessagesAndChatData {
+    messages: IMessagesGroupedByDate[];
     chat: IChatWithParticipantDetails;
 }
 

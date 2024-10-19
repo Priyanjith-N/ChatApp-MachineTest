@@ -4,7 +4,7 @@ import { isObjectIdOrHexString } from "mongoose";
 import { IUserProfile } from "../entity/IUser.entity";
 import IUserRepositroy from "../interface/repositories/user.repository";
 import IUserUseCase from "../interface/usecase/IUser.usecase";
-import { IMessage, IMessageCredentials, IMessagesAndChatData, IMessageWithSenderDetails } from "../entity/IMessage.entity";
+import { IMessage, IMessageCredentials, IMessagesAndChatData, IMessagesGroupedByDate, IMessageWithSenderDetails } from "../entity/IMessage.entity";
 
 // errrors
 import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
@@ -101,7 +101,7 @@ export default class UserUseCase implements IUserUseCase {
 
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
 
-            const messages: IMessageWithSenderDetails[] = await this.userRepository.getAllMessagesWithChatId(chatId);
+            const messages: IMessagesGroupedByDate[] = await this.userRepository.getAllMessagesWithChatId(chatId);
 
             const data: IMessagesAndChatData = {
                 chat,
@@ -143,14 +143,12 @@ export default class UserUseCase implements IUserUseCase {
             
             const updatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat._id, senderId);
 
-            if(!chat.lastMessage) {
-                chat.participants.forEach((userId) => {
-                    emitSocketEvent<IChatWithParticipantDetails>(userId, ChatEventEnum.NEW_CHAT_EVENT, updatedChat);
-                    if(userId.toString() !== senderId) {
-                        emitSocketEvent<IMessageWithSenderDetails>(userId, ChatEventEnum.MESSAGE_RECEIVED_EVENT, createdMessage);
-                    }
-                });
-            }
+            chat.participants.forEach((userId) => {
+                emitSocketEvent<IChatWithParticipantDetails>(userId, ChatEventEnum.NEW_CHAT_EVENT, updatedChat);
+                if(userId.toString() !== senderId) {
+                    emitSocketEvent<IMessageWithSenderDetails>(userId, ChatEventEnum.MESSAGE_RECEIVED_EVENT, createdMessage);
+                }
+            });
 
             return createdMessage;
         } catch (err: any) {
