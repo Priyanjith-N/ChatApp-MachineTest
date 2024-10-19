@@ -4,11 +4,12 @@ import IUserController from "../../interface/controllers/user.controllers";
 import { AuthRequest } from "../../interface/middlewares/authMiddleware.middleware";
 import IUserUseCase from "../../interface/usecase/IUser.usecase";
 import { IUserProfile } from "../../entity/IUser.entity";
+import { IChatWithParticipantDetails } from "../../entity/IChat.entity";
+import { IMessagesAndChatData, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
 
 // enums
 import { StatusCodes } from "../../enums/statusCode.enum";
 import { ResponseMessage } from "../../enums/responseMessage.enum";
-import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
 
 export default class UserController implements IUserController {
     private userUseCase: IUserUseCase;
@@ -83,6 +84,33 @@ export default class UserController implements IUserController {
             res.status(StatusCodes.Success).json({
                 message: ResponseMessage.SUCESSFULL,
                 data
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
+
+    async getMessagesOfAchat(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const data: IMessagesAndChatData = await this.userUseCase.getAllMessageOfChat(req.params.chatId, req.id);
+            
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data
+            });
+        } catch (err: any) {
+            next(err);         
+        }
+    }
+
+    async sendMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { content, type } = req.body;
+            const message: IMessageWithSenderDetails = await this.userUseCase.sendMessage(req.params.chatId, req.id, content, type);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data: message
             });
         } catch (err: any) {
             next(err);

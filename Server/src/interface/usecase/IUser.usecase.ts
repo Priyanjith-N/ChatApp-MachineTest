@@ -1,5 +1,6 @@
 // interfaces
 import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
+import { IMessagesAndChatData, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
 import { IUserProfile } from "../../entity/IUser.entity";
 
 export default interface IUserUseCase {
@@ -8,4 +9,6 @@ export default interface IUserUseCase {
     getAllUser(id: string | undefined): Promise<IUserProfile[]>;
     createNewChat(senderId: string | undefined, reciverId: string | undefined): Promise<IChatWithParticipantDetails | never>;
     getAllChatsOfCurrentUser(_id: string | undefined): Promise<IChatWithParticipantDetails[] | never>;
+    getAllMessageOfChat(chatId: string | undefined, _id: string | undefined): Promise<IMessagesAndChatData | never>;
+    sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined): Promise<IMessageWithSenderDetails | never>;
 }

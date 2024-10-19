@@ -40,4 +40,8 @@ router.post("/createnewchat", userController.createNewChat.bind(userController))
 
 router.get("/chats", userController.getAllChatsOfCurrentUser.bind(userController));
 
+router.get("/messages/:chatId", userController.getMessagesOfAchat.bind(userController));
+
+router.post("/sendmessage/:chatId", userController.sendMessage.bind(userController));
+
 export default router;

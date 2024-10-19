@@ -20,9 +20,6 @@ const MessageSchema: Schema = new Schema(
             enum: ['text', 'image', 'video', 'document'],
             required: true
         },
-        fileUrl: { 
-            type: String
-        },
         isRead: { 
             type: Boolean,
             default: false,

@@ -3,5 +3,7 @@ export enum ErrorField {
     PASSWORD = "password",
     USERNAME = "userName",
     PHONENUMBER = "phoneNumber",
-    TOKEN = "Token"
+    TOKEN = "Token",
+    CHAT = "Chat Error",
+    MESSAGE = "Message Error"
 }

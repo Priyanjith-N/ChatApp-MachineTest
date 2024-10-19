@@ -28,11 +28,16 @@ interface IAuthSocket extends Socket {
     userId?: string;
 }
 
-const mountJoinChatEvent = (socket: IAuthSocket) => {
+const mountJoinAndLeaveChatEvent = (socket: IAuthSocket) => {
     socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId: string) => {
-        console.log('joined');
-        
       socket.join(chatId);
+      console.log(chatId, "chat join");
+    });
+
+    socket.on(ChatEventEnum.LEAVE_CHAT_EVENT, (chatId: string) => {
+        console.log(chatId, "cht leave");
+        
+        socket.leave(chatId);
     });
 };
 
@@ -75,7 +80,7 @@ export function connectSocket(httpServer: http.Server) {
     io.on(ChatEventEnum.CONNECTION, async (socket: IAuthSocket) => {
         socket.join(socket.userId!);
 
-        mountJoinChatEvent(socket); // socket event listen for join
+        mountJoinAndLeaveChatEvent(socket); // socket event listen for join
         
         socket.on(ChatEventEnum.DISCONNECT_EVENT, async () => {
             // disconneted

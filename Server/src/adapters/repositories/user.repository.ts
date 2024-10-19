@@ -1,12 +1,15 @@
+import mongoose from "mongoose";
+
 // importing collections
 import Users from "../../framework/models/user.models";
 import Chats from "../../framework/models/chat.model";
+import Messages from "../../framework/models/message.model";
 
 // interfaces
 import IUserRepositroy from "../../interface/repositories/user.repository";
 import { IUserProfile } from "../../entity/IUser.entity";
 import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
-import mongoose from "mongoose";
+import { IMessage, IMessageCredentials, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
 
 export default class UserRepository implements IUserRepositroy {
     private commonAggratePiplineForChat() {
@@ -22,6 +25,42 @@ export default class UserRepository implements IUserRepositroy {
             {
                 $project: {
                     "participantsData.password": 0
+                }
+            },
+            {
+                $lookup: {
+                    from: 'messages', 
+                    localField: 'lastMessage', 
+                    foreignField: '_id', 
+                    as: 'lastMessageData'
+                }
+            }, 
+            {
+                $unwind: {
+                    path: '$lastMessageData'
+                }
+            }
+        ]
+    }
+
+    private commonAggratePiplineForMessage() {
+        return [
+            {
+                $lookup: {
+                  from: 'users', 
+                  localField: 'senderId', 
+                  foreignField: '_id', 
+                  as: 'senderData'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$senderData'
+                }
+            },
+            {
+                $project: {
+                    "senderData.password": 0
                 }
             }
         ]
@@ -126,5 +165,77 @@ export default class UserRepository implements IUserRepositroy {
         } catch (err: any) {
             throw err;
         }
+    }
+
+    async getChatByChatIdAndUserId(chatId: string, _id: string): Promise<IChatWithParticipantDetails | never> {
+        try {
+            const chat: IChatWithParticipantDetails[] = await Chats.aggregate([
+                {
+                    $match: {
+                        participants: { $elemMatch: { $eq: new mongoose.Types.ObjectId(_id) } },
+                        chatId: new mongoose.Types.ObjectId(chatId)
+                    }
+                },
+                ...this.commonAggratePiplineForChat()
+            ]);
+
+            return chat[0];
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async getAllMessagesWithChatId(chatId: string): Promise<IMessageWithSenderDetails[] | never> {
+        try {
+            return Messages.aggregate([
+                {
+                    $match: {
+                        chatId
+                    }
+                },
+                ...this.commonAggratePiplineForMessage()
+            ])
+        } catch (err: any) {
+           throw err; 
+        }
+    }
+
+    async createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage> {
+        try {
+            const newMessage = new Messages({
+                chatId: messageCredentials.chatId,
+                content: messageCredentials.content,
+                createdAt: new Date(Date.now()),
+                senderId: messageCredentials.senderId,
+                type: messageCredentials.type
+            });
+
+            await newMessage.save();
+
+            return newMessage;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async getMessageById(_id: string): Promise<IMessageWithSenderDetails | never> {
+        try {
+            const message: IMessageWithSenderDetails[] = await Messages.aggregate([
+                {
+                    $match: {
+                        _id: new mongoose.Types.ObjectId(_id)
+                    }
+                },
+                ...this.commonAggratePiplineForMessage()
+            ]);
+
+            return message[0];
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async updateLastMessageOfChat(chatId: string, messageId: string): Promise<void> {
+        await Chats.updateOne({ chatId }, { $set: { lastMessage: messageId } });
     }
 }
