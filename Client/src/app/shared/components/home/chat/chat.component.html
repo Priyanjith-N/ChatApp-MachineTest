@@ -61,7 +61,7 @@
             </div>
             <div class="flex-1 overflow-y-auto chatSection max-h-[78vh] mr-2">
                 @for (chat of displayChatLists; track $index) {
-                    <div [routerLink]="[chat.chatId]" [state]="{chat}" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
+                    <div [routerLink]="[chat.chatId]" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                         <div class="flex items-center gap-4 max-w-full">
                             <div class="flex-initial">
                                 @if(chat.type === "group") {

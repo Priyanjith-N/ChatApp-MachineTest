@@ -34,14 +34,9 @@ export class HomePageComponent implements OnInit {
   ngOnInit() {
     this.socketioService.on<IJWTAuthError | Error>(ChatEventEnum.SOCKET_ERROR_EVENT).subscribe({
       next: (res) => {
-        console.log(res);
-        
         this.router.navigate(["/auth/login"]);
       },
-      error: (err) => { 
-        console.log(err);
-        
-      }
+      error: (err) => {  }
     });
   }
 }

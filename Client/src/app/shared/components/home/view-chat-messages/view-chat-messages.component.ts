@@ -70,9 +70,14 @@ export class ViewChatMessagesComponent implements OnInit {
   ngOnInit(): void {
     this.socketIoService.on<IMessageWithSenderDetails>(ChatEventEnum.MESSAGE_RECEIVED_EVENT).subscribe({
       next: (newMessage) => {
-        console.log("dksljflkjsdfl");
-        
-        this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
+        if(this.messages.length) {
+          this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
+        }else{
+          this.messages.push({
+            createdAt: newMessage.createdAt,
+            messages: [newMessage]
+          })
+        }
       },
       error: (err) => {  }
     });
@@ -110,7 +115,16 @@ export class ViewChatMessagesComponent implements OnInit {
       next: (res) => {
         this.chatForm.reset();
 
-        this.messages[this.messages.length - 1].messages.push(res.data);
+        const newMessage: IMessageWithSenderDetails = res.data;
+
+        if(this.messages.length) { // if there is any element for single day
+          this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
+        }else{ // if not create new
+          this.messages.push({
+            createdAt: newMessage.createdAt,
+            messages: [newMessage]
+          })
+        }
       },
       error: (err) => {  }
     });
