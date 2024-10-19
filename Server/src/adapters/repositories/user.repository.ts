@@ -223,6 +223,11 @@ export default class UserRepository implements IUserRepositroy {
                     $project: {
                       _id: 0
                     }
+                },
+                {
+                    $sort: {
+                        createdAt: 1
+                    }
                 }
             ]);
         } catch (err: any) {
