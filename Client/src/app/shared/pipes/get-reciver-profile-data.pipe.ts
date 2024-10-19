@@ -13,18 +13,18 @@ import { Router } from '@angular/router';
 })
 export class GetReciverProfileDataPipe implements PipeTransform {
 
-  private UserProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
+  private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private router: Router = inject(Router);
 
   transform(value: IUserProfile[] | undefined): IUserProfile | null | undefined {
     if(!value) return;
 
-    if(this.UserProfileManagementService.isNull()) {
+    if(this.userProfileManagementService.isNull()) {
       this.router.navigate(["/auth/login"]);
       return null;
     }
 
-    const currentUserData = this.UserProfileManagementService.get();
+    const currentUserData = this.userProfileManagementService.get();
 
     return value.find((user) => user._id !== currentUserData._id)!;
   }

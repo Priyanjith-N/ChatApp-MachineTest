@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; // acessing environment variables
 
 // interfaces
-import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
@@ -32,5 +32,21 @@ export class ChatService {
     const getALLChatsAPIResponse$: Observable<IGetAllChatsSuccessfullAPIResponse> = this.httpClient.get<IGetAllChatsSuccessfullAPIResponse>(api);
 
     return getALLChatsAPIResponse$;
+  }
+
+  getMessagesOfChat(chatId: string): Observable<IGetMessagessOfChatSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.GET_MESSAGES_OF_CHAT}${chatId}`;
+
+    const getMessagesOfChatAPIResponse$: Observable<IGetMessagessOfChatSuccessfullAPIResponse> = this.httpClient.get<IGetMessagessOfChatSuccessfullAPIResponse>(api);
+
+    return getMessagesOfChatAPIResponse$;
+  }
+
+  sendMessage(content: string, type: "text" | "image" | "video" | "document", chatId: string): Observable<ISendMessageSuccessfullAPIResponse> {
+   const api: string = `${this.backendDomain}${UserAPIEndPoint.SEND_MESSAGE}${chatId}`;
+   
+   const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.httpClient.post<ISendMessageSuccessfullAPIResponse>(api, { content, type });
+
+   return sendMessageAPIResponse$;
   }
 }

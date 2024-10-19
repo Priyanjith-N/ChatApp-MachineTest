@@ -21,6 +21,7 @@ import { IUserProfile } from '../../../models/user.entity';
 })
 export class SettingsComponent implements OnInit {
   private userService: UserService = inject(UserService);
+  private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private router: Router = inject(Router);
   private userProfileManagement: UserProfileManagementService = inject(UserProfileManagementService);
 
@@ -45,6 +46,7 @@ export class SettingsComponent implements OnInit {
     logoutAPIResponse$.subscribe({
       next: (res) => {
         this.isLogginOut = false;
+        this.userProfileManagementService.set(null);
         this.router.navigate(["/auth/login"]); // after sucessfull logging out redirect to login
       },
       error: (err) => {  }

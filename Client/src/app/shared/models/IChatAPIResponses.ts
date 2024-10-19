@@ -1,5 +1,6 @@
 // interfaces
-import { IChatWithParticipantDetails } from "./IChat.entity";
+import { IChatWithParticipantDetails, IMessagesAndChatData } from "./IChat.entity";
+import { IMessageWithSenderDetails } from "./message.entity";
 
 export interface ICreateNewChatSuccessfullAPIResponse {
     message: string;
@@ -9,4 +10,14 @@ export interface ICreateNewChatSuccessfullAPIResponse {
 export interface IGetAllChatsSuccessfullAPIResponse {
     message: string;
     data: IChatWithParticipantDetails[];
+}
+
+export interface IGetMessagessOfChatSuccessfullAPIResponse {
+    message: string;
+    data: IMessagesAndChatData;
+}
+
+export interface ISendMessageSuccessfullAPIResponse {
+    message: string;
+    data: IMessageWithSenderDetails;
 }

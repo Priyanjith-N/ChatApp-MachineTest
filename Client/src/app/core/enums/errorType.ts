@@ -1,3 +1,5 @@
 export enum ErrorType {
-    TOKEN = "Token"
+    TOKEN = "Token",
+    CHAT = "Chat Error",
+    MESSAGE = "Message Error"
 }

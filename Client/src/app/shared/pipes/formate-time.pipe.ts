@@ -6,23 +6,19 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FormateTimePipe implements PipeTransform {
 
-  transform(value: string): string {
-    const startEndTime: string[] = value.split(':').map((val) => val.trim());
+  transform(createdDate: Date): string {
+    const date: Date = new Date(createdDate);
+    
+    let hours = date.getHours();
+    let minutes: number | string = date.getMinutes();
+  
+    const ampm = hours >= 12 ? 'PM' : 'AM';
 
-    const hour = Number(startEndTime[0]);
+    hours = hours % 12;
+    hours = hours ? hours : 12;
 
-    let newHour: number = hour;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
 
-    if(hour > 12) {
-      newHour = hour - 12;
-    }
-
-    const newValue: string = `${(newHour < 10)?('0' + newHour): newHour}: ${startEndTime[1]}`;
-
-    if(hour >= 12) {
-      return `${newValue} PM`;
-    }
-
-    return `${newValue} AM`;
+    return `${hours}:${minutes} ${ampm}`;
   }
 }

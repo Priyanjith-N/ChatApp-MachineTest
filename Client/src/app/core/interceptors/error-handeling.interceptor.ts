@@ -28,7 +28,9 @@ export const errorHandelingInterceptor: HttpInterceptorFn = (req, next) => {
       if(errObj.errorField) {
         return throwError(() => errObj as IValidationError);
       }else if(errObj.type === ErrorType.TOKEN) {
-        // router.navigate(["/auth/login"]); // user is not authenticated
+        router.navigate(["/auth/login"]); // user is not authenticated
+      }else if(errObj.type === ErrorType.CHAT || errObj.type === ErrorType.MESSAGE) {
+        router.navigate(["/chat"]); // user chat or message is invalid or id error
       }
 
       return throwError(() => err.error);

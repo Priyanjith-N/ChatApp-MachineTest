@@ -1,4 +1,5 @@
 // interfaces
+import { IMessage, IMessageWithSenderDetails } from "./message.entity";
 import { IUserProfile } from "./user.entity";
 
 
@@ -16,4 +17,10 @@ export interface IChat {
 
 export interface IChatWithParticipantDetails extends IChat {
     participantsData: IUserProfile[];
+    lastMessageData: IMessage;
+}
+
+export interface IMessagesAndChatData {
+    messages: IMessageWithSenderDetails[];
+    chat: IChatWithParticipantDetails;
 }

@@ -61,7 +61,7 @@
             </div>
             <div class="flex-1 overflow-y-auto chatSection max-h-[78vh] mr-2">
                 @for (chat of displayChatLists; track $index) {
-                    <div [routerLink]="[chat.chatId]" [state]="{chat}" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: false }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
+                    <div [routerLink]="[chat.chatId]" [state]="{chat}" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                         <div class="flex items-center gap-4 max-w-full">
                             <div class="flex-initial">
                                 @if(chat.type === "group") {
@@ -78,7 +78,7 @@
                                         <p class="font-medium">{{ (chat.participantsData | getReciverProfileData)?.displayName }}</p>
                                     }
                                     @if(chat.lastMessage) {
-                                        <p class="text-[12px] text-[#CFCFCF]">{{ chat.lastMessage }}</p>
+                                        <p class="text-[12px] text-[#CFCFCF]">{{ chat.lastMessageData.createdAt | formateTime }}</p>
                                     }
                                 </div>
                                 @if(chat.lastMessage) {
@@ -92,7 +92,9 @@
                                                 }
                                             </div>
                                             <div class="max-w-[200px] overflow-hidden">
-                                                <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">adaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                                                @if(chat.lastMessageData.type === "text") {
+                                                    <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.content }}</p>
+                                                }
                                             </div>
                                         </div>
                                         @if(false) {

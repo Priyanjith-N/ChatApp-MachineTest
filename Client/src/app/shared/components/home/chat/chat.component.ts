@@ -13,18 +13,18 @@ import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIRespons
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
+import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
   imports: [
-    FormateTimePipe,
     GetReciverProfileDataPipe,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    FormateTimePipe
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
@@ -68,10 +68,9 @@ export class ChatComponent implements AfterViewInit, OnInit {
       next: (chat) => {
         this.newChatOrGroupChatModal = false;
 
-        const isChatExist = this.chatListsData.find((presentChat) => presentChat._id === chat._id);
-
-        if(!isChatExist && chat.lastMessage) {
-          this.chatListsData = [chat, ...this.chatListsData];
+        if(chat.lastMessage) {
+          const chatsWithoutEmitedChat = this.chatListsData.filter((currentChat) => currentChat._id !== chat._id);
+          this.chatListsData = [chat, ...chatsWithoutEmitedChat];
           this.displayChatLists = this.chatListsData;
         }
       },

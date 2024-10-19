@@ -13,140 +13,81 @@
         </div>
     </div>
     <div class="flex-1 bg-no-repeat bg-center bg-[#252424c7] pr-1">
-        <div class="flex-1 flex flex-col gap-[2px] px-4 overflow-y-auto chatSection max-h-[76vh]">
-            <div class="my-2 flex justify-center">
-                <div class="p-2 text-[10px] bg-[#1B1B1B] hover:bg-[#252424c7] rounded-[5.07px] text-[#959595] select-none">
-                    Today
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                    <div class="flex justify-end items-center gap-1.5">
-                        <div>
-                            <p class="text-[11px] text-[#959595]">08:42 PM</p>
-                        </div>
-                        <div>
-                            <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
-                        </div>
+        <div class="flex-1 flex flex-col gap-[2px] px-4 overflow-y-auto chatSection max-h-[76vh] pb-8">
+            @if(!messages.length) {
+                <div class="my-2 flex justify-center">
+                    <div class="p-2 text-[10px] bg-[#1B1B1B] hover:bg-[#252424c7] rounded-[5.07px] text-[#959595] select-none">
+                        Today
                     </div>
                 </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                    <div class="flex justify-end items-center gap-1.5">
-                        <div>
-                            <p class="text-[11px] text-[#959595]">08:42 PM</p>
-                        </div>
-                        <div>
-                            <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
+            }
+
+            @for (message of messages; track $index) {
+                @if(false) {
+                    <div class="my-2 flex justify-center">
+                        <div class="p-2 text-[10px] bg-[#1B1B1B] hover:bg-[#252424c7] rounded-[5.07px] text-[#959595] select-none">
+                            Today
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                    <div class="flex justify-end items-center gap-1.5">
-                        <div>
-                            <p class="text-[11px] text-[#959595]">08:42 PM</p>
-                        </div>
-                        <div>
-                            <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                    <div class="flex justify-end items-center gap-1.5">
-                        <div>
-                            <p class="text-[11px] text-[#959595]">08:42 PM</p>
-                        </div>
-                        <div>
-                            <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
+                }
+
+                @if(isMessagedByCurrentUser(message)) {
+                    <div class="flex justify-end">
+                        <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
+                            @if(message.type === "text") {
+                                <p class="break-words">{{ message.content }}</p>
+                            }
+                            <div class="flex justify-end items-center gap-1.5">
+                                <div>
+                                    <p class="text-[11px] text-[#959595]">{{ message.createdAt | formateTime }}</p>
+                                </div>
+                                <div>
+                                    @if(message.isRead) {
+                                        <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
+                                    }@else {
+                                        <img class="w-[14px] h-auto" src="/icons/norReadMessage.png" alt="tick">
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-start">
-                <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                </div>
-            </div>
-            <div class="flex justify-end">
-                <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
-                    <p class="break-words">afkajkjaljfklahfkjakfajhfkjsfjahjkfkashfjkhas</p>
-                    <div class="flex justify-end items-center gap-1.5">
-                        <div>
-                            <p class="text-[11px] text-[#959595]">08:42 PM</p>
-                        </div>
-                        <div>
-                            <img class="w-[14px] h-auto" src="/icons/readMeassage.png" alt="tick">
+                }@else {
+                    <div class="flex justify-start">
+                        <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
+                            @if(message.type === "text") {
+                                <p class="break-words">{{ message.content }}</p>
+                            }
+                            <div class="flex justify-end items-center gap-1.5">
+                                <div>
+                                    <p class="text-[11px] text-[#959595]">{{ message.createdAt | formateTime }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                }
+            }
         </div>
     </div>
     <div class="bg-[#2C2C2C] py-1.5 items-center">
-        <div class="flex px-2">
-            <div class="flex mr-4 items-center gap-2">
-                <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A]">
-                    <img class="w-[20px] h-auto" src="/icons/emojiIcon.png" alt="">
+        <form  [formGroup]="chatForm" (submit)="sendMessage();">
+            <div class="flex px-2">
+                <div class="flex mr-4 items-center gap-2">
+                    <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A]">
+                        <img class="w-[20px] h-auto" src="/icons/emojiIcon.png" alt="">
+                    </div>
+                    <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
+                        <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">
+                    </div> 
                 </div>
-                <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
-                    <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">
-                </div> 
+                <div class="flex-1" >
+                    <input formControlName="content" type="text" class="w-full py-1.5 bg-transparent border-transparent outline-none placeholder:text-[#979797]" placeholder="Type a message">
+                </div>
+                <button type="submit">
+                    <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
+                        <img class="w-[20px] h-auto" src="/icons/sendMessage.png" alt="">
+                    </div> 
+                </button>
             </div>
-            <div class="flex-1" >
-                <input type="text" class="w-full py-1.5 bg-transparent border-transparent outline-none placeholder:text-[#979797]" placeholder="Type a message">
-            </div>
-            <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
-                <img class="w-[20px] h-auto" src="/icons/sendMessage.png" alt="">
-            </div> 
-        </div>
+        </form>
     </div>
 </div>
