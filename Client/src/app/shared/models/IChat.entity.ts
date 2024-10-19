@@ -1,5 +1,5 @@
 // interfaces
-import { IMessage, IMessageWithSenderDetails } from "./message.entity";
+import { IMessage, IMessagesGroupedByDate, IMessageWithSenderDetails } from "./message.entity";
 import { IUserProfile } from "./user.entity";
 
 
@@ -21,6 +21,6 @@ export interface IChatWithParticipantDetails extends IChat {
 }
 
 export interface IMessagesAndChatData {
-    messages: IMessageWithSenderDetails[];
+    messages: IMessagesGroupedByDate[];
     chat: IChatWithParticipantDetails;
 }

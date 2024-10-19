@@ -6,7 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DateFormaterForChatPipe implements PipeTransform {
 
-  transform(date: Date): string {
+  transform(createdAt: Date): string {
+    const date: Date = new Date(createdAt)
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1); 

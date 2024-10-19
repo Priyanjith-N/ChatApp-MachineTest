@@ -9,7 +9,7 @@ import { ChatService } from '../../../../core/services/chat.service';
 import { UserProfileManagementService } from '../../../../core/services/user-profile-management.service';
 
 // interfaces
-import { IMessageWithSenderDetails } from '../../../models/message.entity';
+import { IMessagesGroupedByDate, IMessageWithSenderDetails } from '../../../models/message.entity';
 import { IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
 import { IUserProfile } from '../../../models/user.entity';
@@ -20,6 +20,7 @@ import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-da
 // enums
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
+import { DateFormaterForChatPipe } from '../../../pipes/date-formater-for-chat.pipe';
 
 @Component({
   selector: 'app-view-chat-messages',
@@ -27,6 +28,7 @@ import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
   imports: [
     GetReciverProfileDataPipe,
     FormateTimePipe,
+    DateFormaterForChatPipe,
     ReactiveFormsModule
   ],
   templateUrl: './view-chat-messages.component.html',
@@ -37,10 +39,11 @@ export class ViewChatMessagesComponent implements OnInit {
   private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private socketIoService: SocketIoService = inject(SocketIoService);
+  private router: Router = inject(Router);
   private currentUserProfile: IUserProfile;
 
   chat: IChatWithParticipantDetails | undefined;
-  messages: IMessageWithSenderDetails[] = [];
+  messages: IMessagesGroupedByDate[] = [];
   chatForm: FormGroup;
   
   
@@ -51,9 +54,15 @@ export class ViewChatMessagesComponent implements OnInit {
       content: new FormControl("")
     });
 
-    this.currentUserProfile = this.userProfileManagementService.get();
-
     this.roomId = this.activatedRoute.snapshot.params["roomId"];
+    
+    
+    this.currentUserProfile = this.userProfileManagementService.get();
+    
+    if(!this.currentUserProfile) {
+      this.router.navigate(["/"]);
+      return;
+    }
 
     this.getMessages(); // get all messages for this chat
   }
@@ -61,7 +70,9 @@ export class ViewChatMessagesComponent implements OnInit {
   ngOnInit(): void {
     this.socketIoService.on<IMessageWithSenderDetails>(ChatEventEnum.MESSAGE_RECEIVED_EVENT).subscribe({
       next: (newMessage) => {
-        this.messages = [newMessage, ...this.messages];
+        console.log("dksljflkjsdfl");
+        
+        this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
       },
       error: (err) => {  }
     });
@@ -72,8 +83,6 @@ export class ViewChatMessagesComponent implements OnInit {
 
     getMessagesOfChatAPIResponse$.subscribe({
       next: (res) => {
-        console.log(res);
-        
         this.chat = res.data.chat;
         this.messages = res.data.messages;
         this.joinChat(); // join the chat. chat is vaild 
@@ -99,9 +108,9 @@ export class ViewChatMessagesComponent implements OnInit {
 
     sendMessageAPIResponse$.subscribe({
       next: (res) => {
-        console.log(res);
-        
-        this.messages = [res.data, ...this.messages];
+        this.chatForm.reset();
+
+        this.messages[this.messages.length - 1].messages.push(res.data);
       },
       error: (err) => {  }
     });

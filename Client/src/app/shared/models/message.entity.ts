@@ -14,3 +14,8 @@ export interface IMessage {
 export interface IMessageWithSenderDetails extends IMessage {
     senderData: IUserProfile;
 }
+
+export interface IMessagesGroupedByDate {
+    createdAt: Date;
+    messages: IMessageWithSenderDetails[];
+}
