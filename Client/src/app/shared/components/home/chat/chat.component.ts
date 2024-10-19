@@ -66,8 +66,6 @@ export class ChatComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.socketIoService.on<IChatWithParticipantDetails>(ChatEventEnum.NEW_CHAT_EVENT).subscribe({
       next: (chat) => {
-        console.log(chat);
-        
         this.newChatOrGroupChatModal = false;
 
         if(chat.lastMessage) {
