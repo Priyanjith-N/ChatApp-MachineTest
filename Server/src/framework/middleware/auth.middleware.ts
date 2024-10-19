@@ -29,7 +29,7 @@ export default class AuthMiddleware implements IAuthMiddleware {
                 const decoded: IPayload = this.jwtService.verifyToken(token);
 
                 if(!isObjectIdOrHexString(decoded.id)) throw new JWTTokenError({ statusCode: StatusCodes.Unauthorized, message: ErrorMessage.NOT_AUTHENTICATED });
-
+                
                 req.id = decoded.id;
             } catch (err: any) {
                 throw new JWTTokenError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.TOKEN_EXPIRED });

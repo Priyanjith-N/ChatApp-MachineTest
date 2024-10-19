@@ -31,12 +31,9 @@ interface IAuthSocket extends Socket {
 const mountJoinAndLeaveChatEvent = (socket: IAuthSocket) => {
     socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId: string) => {
       socket.join(chatId);
-      console.log(chatId, "chat join");
     });
 
     socket.on(ChatEventEnum.LEAVE_CHAT_EVENT, (chatId: string) => {
-        console.log(chatId, "cht leave");
-        
         socket.leave(chatId);
     });
 };

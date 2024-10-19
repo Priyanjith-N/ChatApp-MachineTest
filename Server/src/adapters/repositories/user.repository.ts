@@ -37,7 +37,8 @@ export default class UserRepository implements IUserRepositroy {
             }, 
             {
                 $unwind: {
-                    path: '$lastMessageData'
+                    path: '$lastMessageData',
+                    preserveNullAndEmptyArrays: true
                 }
             }
         ]
