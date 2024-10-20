@@ -101,6 +101,14 @@ export default class UserUseCase implements IUserUseCase {
 
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
 
+            await this.userRepository.makeMessageAsRead(chat.chatId, _id); // make all the message for the current user as read
+
+            chat.participants.forEach((userId) => {
+                if(userId.toString() !== _id) {
+                    emitSocketEvent<string>(userId.toString(), ChatEventEnum.MESSAGE_READ_EVENT, chat.chatId);
+                }
+            })
+
             const messages: IMessagesGroupedByDate[] = await this.userRepository.getAllMessagesWithChatId(chatId);
 
             const data: IMessagesAndChatData = {

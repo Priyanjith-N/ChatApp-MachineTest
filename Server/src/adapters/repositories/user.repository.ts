@@ -273,4 +273,9 @@ export default class UserRepository implements IUserRepositroy {
     async updateLastMessageOfChat(chatId: string, messageId: string): Promise<void> {
         await Chats.updateOne({ chatId }, { $set: { lastMessage: messageId } });
     }
+
+    async makeMessageAsRead(chatId: string, reciverId: string): Promise<void> {
+        await Messages.updateMany({ chatId, senderId: { $ne: reciverId }, isRead: false }, { $set: { isRead: true } })
+        ;
+    }
 }

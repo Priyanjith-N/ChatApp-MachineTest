@@ -16,4 +16,5 @@ export default interface IUserRepositroy {
     createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage>;
     getMessageById(_id: string): Promise<IMessageWithSenderDetails | never>;
     updateLastMessageOfChat(chatId: string, messageId: string): Promise<void>;
+    makeMessageAsRead(chatId: string, reciverId: string): Promise<void>;
 }

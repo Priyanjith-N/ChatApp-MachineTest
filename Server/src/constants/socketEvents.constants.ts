@@ -6,5 +6,6 @@ export const ChatEventEnum = Object.freeze({
     JOIN_CHAT_EVENT: "joinChat",
     LEAVE_CHAT_EVENT: "leaveChat",
     NEW_CHAT_EVENT: "newChat",
-    MESSAGE_RECEIVED_EVENT: "messageReceived"
+    MESSAGE_RECEIVED_EVENT: "messageReceived",
+    MESSAGE_READ_EVENT: "messageRead"
 });
