@@ -61,7 +61,7 @@
             </div>
             <div class="flex-1 overflow-y-auto chatSection max-h-[78vh] mr-2">
                 @for (chat of displayChatLists; track $index) {
-                    <div [routerLink]="[chat.chatId]" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
+                    <div (click)="readChat(chat);" [routerLink]="[chat.chatId]" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                         <div class="flex items-center gap-4 max-w-full">
                             <div class="flex-initial">
                                 @if(chat.type === "group") {
@@ -98,9 +98,10 @@
                                                 }
                                             </div>
                                         </div>
-                                        @if(false) {
+
+                                        @if(chat.unReadMessages) {
                                             <div class="w-fit h-auto rounded-full bg-[#1DAA61] text-black p-1 px-2 text-[10px]">
-                                                <p>1</p>
+                                                <p>{{ chat.unReadMessages }}</p>
                                             </div>
                                         }
                                     </div>

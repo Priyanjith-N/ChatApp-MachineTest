@@ -112,6 +112,10 @@ export class ChatComponent implements AfterViewInit, OnInit {
     event.stopImmediatePropagation();
   }
 
+  readChat(chat: IChatWithParticipantDetails) {
+    chat.unReadMessages = 0;
+  }
+
   openOrCloseNewChatOrGroupChatModal() {
     this.newChatOrGroupChatModal = !this.newChatOrGroupChatModal;
 
