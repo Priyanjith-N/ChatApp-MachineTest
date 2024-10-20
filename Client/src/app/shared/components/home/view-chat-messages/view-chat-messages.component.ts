@@ -111,7 +111,6 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy {
           for(const message of dayMessage.messages) {
             message.isRead = true;
           }
-          
         }
       },
       error: (err) => {  }
