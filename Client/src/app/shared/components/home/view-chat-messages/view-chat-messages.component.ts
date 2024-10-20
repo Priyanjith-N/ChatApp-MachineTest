@@ -105,6 +105,18 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.socketIoService.on<string>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
+      next: (chatId) => { // this will only emited by other person when he or she is in the room or cliked your chat
+        for(const dayMessage of this.messages) {
+          for(const message of dayMessage.messages) {
+            message.isRead = true;
+          }
+          
+        }
+      },
+      error: (err) => {  }
+    });
+
     this.socketIoService.on<IMessageWithSenderDetails>(ChatEventEnum.MESSAGE_RECEIVED_EVENT).subscribe({
       next: (newMessage) => {
         if(this.messages.length) {

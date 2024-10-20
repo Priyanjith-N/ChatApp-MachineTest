@@ -87,9 +87,9 @@
                                         <div class="flex items-center gap-1.5">
                                             <div>
                                                 @if(chat.lastMessageData.isRead && (currentUserProfile?._id === chat.lastMessageData.senderId)) {
-                                                    <img class="w-[18px] h-auto" src="/icons/readMeassage.png" alt="tick">
+                                                    <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/readMeassage.png" alt="tick">
                                                 }@else if((currentUserProfile?._id === chat.lastMessageData.senderId)) {
-                                                    <img class="w-[18px] h-auto" src="/icons/norReadMessage.png" alt="tick">
+                                                    <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/norReadMessage.png" alt="tick">
                                                 }
                                             </div>
                                             <div class="max-w-[200px] overflow-hidden">
