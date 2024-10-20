@@ -155,12 +155,16 @@ export default class UserUseCase implements IUserUseCase {
             
             await this.userRepository.updateLastMessageOfChat(chat.chatId, createdMessage._id); // update last message
             
-            const updatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, senderId);
+            const updatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, senderId); // this chat updates the current user
+
+            const chatToBeEmittedToReciver: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, reciverId); // this chat updates the reciver user
 
             chat.participants.forEach((userId) => {
-                emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, updatedChat);
                 if(userId.toString() !== senderId) {
+                    emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, chatToBeEmittedToReciver); // every reciver gets the reverchat
                     emitSocketEvent<IMessageWithSenderDetails>(userId.toString(), ChatEventEnum.MESSAGE_RECEIVED_EVENT, createdMessage);
+                }else{
+                    emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, updatedChat); // for current user chat update and message is updated form front-end
                 }
             });
 

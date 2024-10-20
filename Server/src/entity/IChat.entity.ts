@@ -17,4 +17,5 @@ export interface IChat {
 export interface IChatWithParticipantDetails extends IChat {
     participantsData: IUserProfile[];
     lastMessageData: IMessage;
+    unReadMessages: number;
 }

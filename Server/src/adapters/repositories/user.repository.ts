@@ -12,8 +12,52 @@ import { IChat, IChatWithParticipantDetails } from "../../entity/IChat.entity";
 import { IMessage, IMessageCredentials, IMessagesGroupedByDate, IMessageWithSenderDetails } from "../../entity/IMessage.entity";
 
 export default class UserRepository implements IUserRepositroy {
-    private commonAggratePiplineForChat() {
+    private commonAggratePiplineForChat(currentUserId: string) {
         return [
+            {
+                $lookup: {
+                  from: 'messages', 
+                  localField: 'chatId', 
+                  foreignField: 'chatId', 
+                  as: 'messages'
+                }
+              }, 
+              {
+                $addFields: {
+                  messages: {
+                    $filter: {
+                      input: '$messages', 
+                      as: 'message', 
+                      cond: {
+                        $and: [
+                          {
+                            $eq: [
+                              '$$message.isRead', false
+                            ]
+                          }, 
+                          {
+                            $ne: [
+                              '$$message.senderId', new mongoose.Types.ObjectId(currentUserId)
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+            }, 
+            {
+                $addFields: {
+                  unReadMessages: {
+                    $size: '$messages'
+                  }
+                }
+            }, 
+            {
+                $project: {
+                  messages: 0
+                }
+            },
             {
                 $lookup: {
                   from: 'users', 
@@ -107,7 +151,7 @@ export default class UserRepository implements IUserRepositroy {
                         ]
                     }
                 },
-                ...this.commonAggratePiplineForChat()
+                ...this.commonAggratePiplineForChat(senderId)
             ]);
 
             return chat[0];
@@ -141,7 +185,7 @@ export default class UserRepository implements IUserRepositroy {
                         _id: new mongoose.Types.ObjectId(id)
                     }
                 },
-                ...this.commonAggratePiplineForChat()
+                ...this.commonAggratePiplineForChat(senderId)
             ]);
 
             return chat[0];
@@ -159,7 +203,7 @@ export default class UserRepository implements IUserRepositroy {
                         lastMessage: { $ne: null }
                     }
                 },
-                ...this.commonAggratePiplineForChat()
+                ...this.commonAggratePiplineForChat(_id)
             ]);
 
             return chat;
@@ -177,7 +221,7 @@ export default class UserRepository implements IUserRepositroy {
                         chatId: new mongoose.Types.ObjectId(chatId)
                     }
                 },
-                ...this.commonAggratePiplineForChat()
+                ...this.commonAggratePiplineForChat(_id)
             ]);
 
             return chat[0];
