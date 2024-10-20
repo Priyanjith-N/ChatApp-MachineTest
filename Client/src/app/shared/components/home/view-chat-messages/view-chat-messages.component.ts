@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -34,32 +34,44 @@ import { DateFormaterForChatPipe } from '../../../pipes/date-formater-for-chat.p
   templateUrl: './view-chat-messages.component.html',
   styleUrl: './view-chat-messages.component.css'
 })
-export class ViewChatMessagesComponent implements OnInit {
+export class ViewChatMessagesComponent implements OnInit, OnDestroy {
   private chatService: ChatService = inject(ChatService);
   private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
-  private currentUserProfile: IUserProfile;
+  private currentUserProfile: IUserProfile | null = null;
 
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
   chatForm: FormGroup;
   
   
-  private roomId: string;
+  private roomId: string = "";
 
   constructor() {
+    this.userProfileManagementService.userProfile$.subscribe({
+      next: (user) => {
+        this.currentUserProfile = user;
+      }
+    });
+
     this.chatForm = new FormGroup({
       content: new FormControl("")
     });
+  }
 
+  clearAll() {
+    this.chat = undefined;
+    this.messages = [];
+    this.chatForm.reset();
+  }
+
+  initElements() {
     this.roomId = this.activatedRoute.snapshot.params["roomId"];
     
-    
-    this.currentUserProfile = this.userProfileManagementService.get();
-    
     if(!this.currentUserProfile) {
+      this.leaveRoom();
       this.router.navigate(["/"]);
       return;
     }
@@ -67,7 +79,32 @@ export class ViewChatMessagesComponent implements OnInit {
     this.getMessages(); // get all messages for this chat
   }
 
+  leaveRoom() {
+    if(this.roomId) {
+      this.socketIoService.emit<string>(ChatEventEnum.LEAVE_CHAT_EVENT, this.roomId);
+    }
+  }
+
   ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe({
+      next: (params) => {
+        const currentRoomId = params.get("roomId");
+
+        if(!currentRoomId) {
+          this.leaveRoom();
+          this.router.navigate(["/chat"]);
+          return;
+        }
+
+        if(currentRoomId !== this.roomId) {
+          this.leaveRoom();
+          this.clearAll();
+        }
+
+        this.initElements();
+      }
+    });
+
     this.socketIoService.on<IMessageWithSenderDetails>(ChatEventEnum.MESSAGE_RECEIVED_EVENT).subscribe({
       next: (newMessage) => {
         if(this.messages.length) {
@@ -81,6 +118,10 @@ export class ViewChatMessagesComponent implements OnInit {
       },
       error: (err) => {  }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.leaveRoom();
   }
 
   private getMessages() {
@@ -101,6 +142,11 @@ export class ViewChatMessagesComponent implements OnInit {
   }
 
   isMessagedByCurrentUser(message: IMessageWithSenderDetails) {
+    if(!this.currentUserProfile) {
+      this.leaveRoom();
+      this.router.navigate(["/chat"]);
+      return;
+    }
     return message.senderId === this.currentUserProfile._id;
   }
 
