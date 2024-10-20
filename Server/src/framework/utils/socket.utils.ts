@@ -85,7 +85,12 @@ export function connectSocket(httpServer: http.Server) {
     });
 
 
-    return function emitSocketEvent<T>(roomId: string, event: string, payload: T) {
-        io.in(roomId).emit(event, payload);
+    return {
+        emitSocketEvent: function<T>(roomId: string, event: string, payload: T) {
+            io.in(roomId).emit(event, payload);
+        },
+        isUserInRoom(roomId: string) {
+            return io.sockets.adapter.rooms.get(roomId);
+        }
     }
 }

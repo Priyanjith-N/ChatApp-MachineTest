@@ -12,13 +12,13 @@ import { IChat, IChatWithParticipantDetails } from "../entity/IChat.entity";
 import ChatError from "../errors/chatError.error";
 
 // socket
-import emitSocketEvent from "../server";
 
 // enums
 import { ChatEventEnum } from "../constants/socketEvents.constants";
 import { StatusCodes } from "../enums/statusCode.enum";
 import { ErrorMessage } from "../enums/errorMesaage.enum";
 import { ErrorField } from "../enums/errorField.enum";
+import { emitSocketEvent } from "../server";
 
 export default class UserUseCase implements IUserUseCase {
     private userRepository: IUserRepositroy;
