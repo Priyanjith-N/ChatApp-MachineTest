@@ -28,17 +28,26 @@ interface IAuthSocket extends Socket {
     userId?: string;
 }
 
-const mountJoinAndLeaveChatEvent = (socket: IAuthSocket) => {
+const mountJoinAndLeaveChatEvent = (socket: IAuthSocket, activeChats: Map<string, Set<string>>) => {
     socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId: string) => {
       socket.join(chatId);
+
+      if(activeChats.has(chatId)) {
+        activeChats.get(chatId)?.add(socket.userId!);
+      }else{
+        activeChats.set(chatId, new Set<string>([socket.userId!]));
+      }
     });
 
     socket.on(ChatEventEnum.LEAVE_CHAT_EVENT, (chatId: string) => {
         socket.leave(chatId);
+
+        activeChats.get(chatId)?.delete(socket.userId!);
     });
 };
 
 export function connectSocket(httpServer: http.Server) {
+    const activeChats: Map<string, Set<string>> = new Map();
 
     const io = new Server(httpServer, {
         pingTimeout: 60000,
@@ -77,7 +86,7 @@ export function connectSocket(httpServer: http.Server) {
     io.on(ChatEventEnum.CONNECTION, async (socket: IAuthSocket) => {
         socket.join(socket.userId!);
 
-        mountJoinAndLeaveChatEvent(socket); // socket event listen for join
+        mountJoinAndLeaveChatEvent(socket, activeChats); // socket event listen for join
         
         socket.on(ChatEventEnum.DISCONNECT_EVENT, async () => {
             // disconneted
@@ -89,8 +98,12 @@ export function connectSocket(httpServer: http.Server) {
         emitSocketEvent: function<T>(roomId: string, event: string, payload: T) {
             io.in(roomId).emit(event, payload);
         },
-        isUserInRoom(roomId: string) {
-            return io.sockets.adapter.rooms.get(roomId);
+        isReciverInChat(chatId: string, reciverId: string) {
+            const usersJoined: Set<string> | undefined = activeChats.get(chatId);
+            
+            if(!usersJoined) return false;
+
+            return usersJoined.has(reciverId);
         }
     }
 }

@@ -18,7 +18,7 @@ import { ChatEventEnum } from "../constants/socketEvents.constants";
 import { StatusCodes } from "../enums/statusCode.enum";
 import { ErrorMessage } from "../enums/errorMesaage.enum";
 import { ErrorField } from "../enums/errorField.enum";
-import { emitSocketEvent } from "../server";
+import { emitSocketEvent, isReciverInChat } from "../server";
 
 export default class UserUseCase implements IUserUseCase {
     private userRepository: IUserRepositroy;
@@ -136,11 +136,17 @@ export default class UserUseCase implements IUserUseCase {
             
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
             
+            const reciverId: string = chat.participants.find((userId) => userId.toString() !== senderId)!;
+
+            const isRead: boolean = isReciverInChat(chat.chatId.toString(), reciverId.toString());
+            
+            
             const messageCredentials: IMessageCredentials = {
                 chatId,
                 content,
                 senderId,
-                type
+                type,
+                isRead
             }
             
             const newMessage: IMessage = await this.userRepository.createNewMessage(messageCredentials);

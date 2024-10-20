@@ -242,7 +242,8 @@ export default class UserRepository implements IUserRepositroy {
                 content: messageCredentials.content,
                 createdAt: new Date(Date.now()),
                 senderId: messageCredentials.senderId,
-                type: messageCredentials.type
+                type: messageCredentials.type,
+                isRead: messageCredentials.isRead
             });
 
             await newMessage.save();

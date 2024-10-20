@@ -8,10 +8,10 @@ import { connectSocket } from "./framework/utils/socket.utils";
 
 connectDB(); // connecting to db
 
-const { emitSocketEvent, isUserInRoom } = connectSocket(httpServer); // socket configuration and event listn initailazation
+const { emitSocketEvent, isReciverInChat } = connectSocket(httpServer); // socket configuration and event listn initailazation
 
 const PORT: string | number = process.env.PORT || 3000;
 
 httpServer.listen(PORT, () => console.log(`Chat App Server is running on PORT ${PORT}`));
 
-export { emitSocketEvent, isUserInRoom };
+export { emitSocketEvent, isReciverInChat };

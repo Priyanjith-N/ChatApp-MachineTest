@@ -30,4 +30,5 @@ export interface IMessageCredentials {
     senderId: string;
     content: string;
     type: "text" | "image" | "video" | "document";
+    isRead: boolean;
 }
