@@ -7,7 +7,7 @@ import { ChatService } from '../../../../core/services/chat.service';
 import { SocketIoService } from '../../../../core/services/socket-io.service';
 
 // interfacess
-import { IUserProfile } from '../../../models/user.entity';
+import IUser, { IUserProfile } from '../../../models/user.entity';
 import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
 import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
@@ -15,6 +15,7 @@ import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
 import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
+import { UserProfileManagementService } from '../../../../core/services/user-profile-management.service';
 
 @Component({
   selector: 'app-chat',
@@ -31,6 +32,7 @@ import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 })
 export class ChatComponent implements AfterViewInit, OnInit {
   private userService: UserService = inject(UserService);
+  private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private chatService: ChatService = inject(ChatService);
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
@@ -46,6 +48,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
   displayChatLists: IChatWithParticipantDetails[] = [];
   private listOfUsersData: IUserProfile[] = [];
   displayListOfUsers: IUserProfile[] = [];
+  currentUserProfile: IUserProfile | null = null;
 
   constructor() {
     this.getAllChats();
@@ -64,6 +67,12 @@ export class ChatComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+    this.userProfileManagementService.userProfile$.subscribe({
+      next: (userProfile) => {
+        this.currentUserProfile = userProfile;
+      }
+    });
+
     this.socketIoService.on<IChatWithParticipantDetails>(ChatEventEnum.NEW_CHAT_EVENT).subscribe({
       next: (chat) => {
         this.newChatOrGroupChatModal = false;
@@ -78,6 +87,21 @@ export class ChatComponent implements AfterViewInit, OnInit {
         this.newChatOrGroupChatModal = false;
       }
     });
+
+    this.socketIoService.on<string>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
+      next: (chatId) => {
+        const chatToMakeMessageAsRead = this.chatListsData.find((chat) => chat.chatId === chatId);
+
+        if(chatToMakeMessageAsRead) {
+          chatToMakeMessageAsRead.lastMessageData.isRead = true;
+        }
+      },
+      error: (err) => {  }
+    });
+  }
+
+  getReciverProfileData(chat: IChatWithParticipantDetails) {
+    return chat.participantsData.find((userData) => (this.currentUserProfile && (userData._id !== this.currentUserProfile._id)));
   }
 
   ngAfterViewInit(): void {

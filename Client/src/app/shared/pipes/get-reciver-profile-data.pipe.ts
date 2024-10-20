@@ -20,7 +20,7 @@ export class GetReciverProfileDataPipe implements PipeTransform {
     if(!value) return;
 
     if(this.userProfileManagementService.isNull()) {
-      this.router.navigate(["/auth/login"]);
+      this.router.navigate(["/chat"]);
       return null;
     }
 

@@ -67,7 +67,7 @@
                                 @if(chat.type === "group") {
                                     <img class="w-[44px] rounded-full h-auto" [src]="chat.groupProfilePicture" alt="">
                                 }@else {
-                                    <img class="w-[44px] rounded-full h-auto" [src]="(chat.participantsData | getReciverProfileData)?.profilePicture" alt="">
+                                    <img class="w-[44px] rounded-full h-auto" [src]="getReciverProfileData(chat)?.profilePicture" alt="">
                                 }
                             </div>
                             <div class="flex-auto">
@@ -75,7 +75,7 @@
                                     @if(chat.type === "group") {
                                         <p class="font-medium">{{ chat.groupName }}</p>
                                     }@else {
-                                        <p class="font-medium">{{ (chat.participantsData | getReciverProfileData)?.displayName }}</p>
+                                        <p class="font-medium">{{ getReciverProfileData(chat)?.displayName }}</p>
                                     }
 
                                     @if(chat.lastMessage) {
@@ -86,9 +86,9 @@
                                     <div class="flex justify-between items-center">
                                         <div class="flex items-center gap-1.5">
                                             <div>
-                                                @if(chat.lastMessageData.isRead) {
+                                                @if(chat.lastMessageData.isRead && (currentUserProfile?._id === chat.lastMessageData.senderId)) {
                                                     <img class="w-[18px] h-auto" src="/icons/readMeassage.png" alt="tick">
-                                                }@else {
+                                                }@else if((currentUserProfile?._id === chat.lastMessageData.senderId)) {
                                                     <img class="w-[18px] h-auto" src="/icons/norReadMessage.png" alt="tick">
                                                 }
                                             </div>
