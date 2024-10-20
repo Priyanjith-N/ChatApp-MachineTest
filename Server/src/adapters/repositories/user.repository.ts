@@ -204,7 +204,7 @@ export default class UserRepository implements IUserRepositroy {
                     }
                 },
                 ...this.commonAggratePiplineForChat(_id)
-            ]);
+            ]).sort({ updatedAt: -1 });
 
             return chat;
         } catch (err: any) {
