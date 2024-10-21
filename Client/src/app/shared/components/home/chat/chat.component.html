@@ -59,7 +59,7 @@
                 </div>
                 <input #search (keyup)="searchUserInChat($event);" class="w-full py-1.5 pl-8 border border-[#3B3B3B] border-b-white bg-[#222222] text-white font-normal text-base outline-none rounded-[5.07px] placeholder:text-[#979797] focus:border-b-2 focus:border-b-[#1DAA61]" placeholder="Search or start a new chat" type="text">
             </div>
-            <div class="flex-1 overflow-y-auto chatSection max-h-[78vh] mr-2">
+            <div class="flex-1 flex flex-col gap-1.5 overflow-y-auto chatSection max-h-[78vh] mr-2">
                 @for (chat of displayChatLists; track $index) {
                     <div (click)="readChat(chat);" [routerLink]="[chat.chatId]" routerLinkActive="activeChat" [routerLinkActiveOptions]="{ exact: true }" class="py-3 px-4 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                         <div class="flex items-center gap-4 max-w-full">
