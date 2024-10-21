@@ -173,4 +173,26 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async createNewGroupChat(groupName: string | undefined, participants: string[] | undefined, groupAdmin: string | undefined): Promise<IChatWithParticipantDetails | never> {
+        try {
+            if(!groupName || !participants || !groupAdmin || !isObjectIdOrHexString(groupAdmin)) throw new RequiredCredentialsNotGiven(ErrorMessage.REQUIRED_CREDENTIALS_NOT_GIVEN);
+
+            participants.push(groupAdmin); // should include the user creating the group.
+
+            const newChat: IChat = await this.userRepository.createNewGroupChat(groupName, participants, groupAdmin);
+
+            const createdChat: IChatWithParticipantDetails = await this.userRepository.getChatByIdWithParticipantDetails(newChat._id, groupAdmin);
+
+            createdChat.participants.forEach((userId) => {
+                if(userId.toString() !== groupAdmin) {
+                    emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, createdChat);
+                }
+            });
+
+            return createdChat;
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

@@ -10,4 +10,5 @@ export default interface IUserController {
     getAllChatsOfCurrentUser(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     getMessagesOfAchat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     sendMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    createNewGrooupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 }

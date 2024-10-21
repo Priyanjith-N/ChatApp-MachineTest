@@ -121,7 +121,7 @@ export default class UserRepository implements IUserRepositroy {
         }
     }
 
-    async changeUserStatus(_id: string, status: "online" | "offline"): Promise<void> {
+    async changeUserStatus(_id: string, status: "online" | "offline"): Promise<void | never> {
         try {
             await Users.updateOne({ _id }, { $set: { status } });
         } catch (err: any) {
@@ -202,7 +202,23 @@ export default class UserRepository implements IUserRepositroy {
                 {
                     $match: {
                         participants: { $elemMatch: { $eq: new mongoose.Types.ObjectId(_id) } },
-                        lastMessage: { $ne: null }
+                        $or: [
+                            {
+                                type: 'group'
+                            }, 
+                            {
+                                $and: [
+                                    {
+                                        type: 'one-to-one'
+                                    }, 
+                                    {
+                                        lastMessage: {
+                                            $ne: null
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 },
                 ...this.commonAggratePiplineForChat(_id)
@@ -298,7 +314,7 @@ export default class UserRepository implements IUserRepositroy {
         }
     }
 
-    async createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage> {
+    async createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage | never> {
         try {
             const newMessage = new Messages({
                 chatId: messageCredentials.chatId,
@@ -334,12 +350,38 @@ export default class UserRepository implements IUserRepositroy {
         }
     }
 
-    async updateLastMessageOfChat(chatId: string, messageId: string): Promise<void> {
-        await Chats.updateOne({ chatId }, { $set: { lastMessage: messageId } });
+    async updateLastMessageOfChat(chatId: string, messageId: string): Promise<void | never> {
+        try {
+            await Chats.updateOne({ chatId }, { $set: { lastMessage: messageId } });
+        } catch (err: any) {
+            throw err;
+        }
     }
 
-    async makeMessageAsRead(chatId: string, reciverId: string): Promise<void> {
-        await Messages.updateMany({ chatId, senderId: { $ne: reciverId }, isRead: false }, { $set: { isRead: true } })
-        ;
+    async makeMessageAsRead(chatId: string, reciverId: string): Promise<void | never> {
+        try {
+            await Messages.updateMany({ chatId, senderId: { $ne: reciverId }, isRead: false }, { $set: { isRead: true } });
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    async createNewGroupChat(groupName: string, participants: string[], groupAdmin: string): Promise<IChat | never> {
+        try {
+            const newChat = new Chats({
+                chatId: new mongoose.Types.ObjectId(),
+                createdAt: new Date(Date.now()),
+                groupAdmin,
+                groupName,
+                participants,
+                type: "group",
+            });
+
+            await newChat.save();
+
+            return newChat;
+        } catch (err: any) {
+            throw err;
+        }
     }
 }

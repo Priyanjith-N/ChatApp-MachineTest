@@ -44,4 +44,6 @@ router.get("/messages/:chatId", userController.getMessagesOfAchat.bind(userContr
 
 router.post("/sendmessage/:chatId", userController.sendMessage.bind(userController));
 
+router.post("/createnewgroupchat", userController.createNewGrooupChat.bind(userController));
+
 export default router;

@@ -116,4 +116,21 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async createNewGrooupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const groupName: string | undefined = req.body.groupName;
+            const groupMembers: string[] | undefined = req.body.groupMembers;
+            const groupAdmin: string | undefined = req.id;
+
+            const groupChat: IChatWithParticipantDetails = await this.userUseCase.createNewGroupChat(groupName, groupMembers, groupAdmin);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data: groupChat
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }
