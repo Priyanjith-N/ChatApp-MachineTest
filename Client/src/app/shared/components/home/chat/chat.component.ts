@@ -54,6 +54,17 @@ export class ChatComponent implements AfterViewInit, OnInit {
     this.getAllChats();
   }
 
+  searchUserInChat(event: Event) {
+    const inputElement: HTMLInputElement = event.target as HTMLInputElement;
+
+    const searchText: string = inputElement.value.toLowerCase();
+
+    this.displayChatLists = this.chatListsData.filter((chat) => {
+      const getReciverProfileData = this.getReciverProfileData(chat);
+      return getReciverProfileData && (getReciverProfileData.displayName.toLowerCase().startsWith(searchText) || getReciverProfileData.phoneNumber.startsWith(searchText));
+    })
+  }
+
   private getAllChats() {
     const getALLChatsAPIResponse$: Observable<IGetAllChatsSuccessfullAPIResponse> = this.chatService.getAllChats();
 
@@ -113,6 +124,8 @@ export class ChatComponent implements AfterViewInit, OnInit {
   }
 
   readChat(chat: IChatWithParticipantDetails) {
+    this.displayChatLists = this.chatListsData;
+    this.searchInput.nativeElement.value = "";
     chat.unReadMessages = 0;
   }
 

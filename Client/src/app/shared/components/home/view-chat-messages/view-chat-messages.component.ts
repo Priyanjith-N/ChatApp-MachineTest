@@ -176,6 +176,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
         this.chat = res.data.chat;
         this.messages = res.data.messages;
         this.joinChat(); // join the chat. chat is vaild 
+        this.chatMessageInput.nativeElement.focus();
       },
       error: (err) => {  }
     });
