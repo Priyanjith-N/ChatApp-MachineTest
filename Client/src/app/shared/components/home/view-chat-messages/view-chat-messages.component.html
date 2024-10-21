@@ -71,8 +71,9 @@
         <form  [formGroup]="chatForm" (submit)="sendMessage();">
             <div class="flex px-2">
                 <div class="flex mr-4 items-center gap-2">
-                    <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A]">
+                    <div (click)="showOrCloseEmojiPicker();" class="relative px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A]">
                         <img class="w-[20px] h-auto" src="/icons/emojiIcon.png" alt="">
+                        <div #emojiDiv class="absolute duration-300 ease-in-out -top-4 -translate-y-full -translate-x-1/2 hidden" [class.display]="showEmojiPicker" ></div>
                     </div>
                     <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
                         <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">

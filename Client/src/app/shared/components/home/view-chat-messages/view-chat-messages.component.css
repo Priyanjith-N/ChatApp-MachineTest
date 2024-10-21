@@ -40,3 +40,7 @@
     border-style: solid;
     border-color: transparent transparent transparent #005C4B;
 }
+
+.display {
+    @apply block;
+}

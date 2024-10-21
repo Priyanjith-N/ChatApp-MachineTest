@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +21,8 @@ import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-da
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 import { DateFormaterForChatPipe } from '../../../pipes/date-formater-for-chat.pipe';
+
+import { Database, Picker } from 'emoji-picker-element';
 
 @Component({
   selector: 'app-view-chat-messages',
@@ -45,14 +47,22 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   @ViewChild("chatMessageInput")
   private chatMessageInput!: ElementRef<HTMLInputElement>;
 
+  @ViewChild("emojiDiv")
+  private emojitDiv!: ElementRef<HTMLDivElement>;
+
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
   chatForm: FormGroup;
+
+  private emojiPicker: Picker;
+  showEmojiPicker: boolean = false;
   
   
   private roomId: string = "";
 
   constructor() {
+    this.emojiPicker = new Picker();
+
     this.userProfileManagementService.userProfile$.subscribe({
       next: (user) => {
         this.currentUserProfile = user;
@@ -64,8 +74,24 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     });
   }
 
+  showOrCloseEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
   ngAfterViewInit(): void {
     this.chatMessageInput.nativeElement.focus();
+
+    this.emojitDiv.nativeElement.appendChild(this.emojiPicker);
+
+    this.emojiPicker.addEventListener('emoji-click', (event: any) => {
+      const message = this.chatForm.value.content;
+
+      if(message) {
+        this.chatForm.get("content")?.setValue(message + event.detail.unicode);
+      }else{
+        this.chatForm.get("content")?.setValue(event.detail.unicode);
+      }
+    });
   }
 
   clearAll() {
