@@ -192,8 +192,6 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
     getMessagesOfChatAPIResponse$.subscribe({
       next: (res) => {
-        console.log(res.data.chat);
-        
         this.chat = res.data.chat;
         this.messages = res.data.messages;
         this.joinChat(); // join the chat. chat is vaild 
