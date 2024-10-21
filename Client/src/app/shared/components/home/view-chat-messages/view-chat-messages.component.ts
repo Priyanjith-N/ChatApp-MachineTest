@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -34,13 +34,16 @@ import { DateFormaterForChatPipe } from '../../../pipes/date-formater-for-chat.p
   templateUrl: './view-chat-messages.component.html',
   styleUrl: './view-chat-messages.component.css'
 })
-export class ViewChatMessagesComponent implements OnInit, OnDestroy {
+export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewInit {
   private chatService: ChatService = inject(ChatService);
   private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
   private currentUserProfile: IUserProfile | null = null;
+
+  @ViewChild("chatMessageInput")
+  private chatMessageInput!: ElementRef<HTMLInputElement>;
 
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
@@ -59,6 +62,10 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy {
     this.chatForm = new FormGroup({
       content: new FormControl("")
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.chatMessageInput.nativeElement.focus();
   }
 
   clearAll() {
