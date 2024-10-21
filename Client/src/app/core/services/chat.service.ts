@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; // acessing environment variables
 
 // interfaces
-import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
@@ -48,5 +48,13 @@ export class ChatService {
    const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.httpClient.post<ISendMessageSuccessfullAPIResponse>(api, { content, type });
 
    return sendMessageAPIResponse$;
+  }
+
+  createNewGroupChat(groupName: string, groupMembers: string[]): Observable<ICreateNewGroupSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.CREATE_NEW_GROUP}`;
+
+    const createNewGroupAPIResponse$: Observable<ICreateNewGroupSuccessfullAPIResponse> = this.httpClient.post<ICreateNewGroupSuccessfullAPIResponse>(api, { groupName, groupMembers });
+
+    return createNewGroupAPIResponse$;
   }
 }

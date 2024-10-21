@@ -97,6 +97,8 @@ export class RegisterFormComponent {
           const errObj: IValidationError = err;
 
           this.registerForm.get(errObj.errorField)?.setErrors({ message: errObj.message });
+
+          this.registerForm.markAllAsTouched();
         }
       })
     });

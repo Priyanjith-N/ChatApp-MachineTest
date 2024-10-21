@@ -21,3 +21,8 @@ export interface ISendMessageSuccessfullAPIResponse {
     message: string;
     data: IMessageWithSenderDetails;
 }
+
+export interface ICreateNewGroupSuccessfullAPIResponse {
+    message: string;
+    data: IChatWithParticipantDetails;
+}

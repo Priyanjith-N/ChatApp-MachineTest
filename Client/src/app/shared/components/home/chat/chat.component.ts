@@ -9,7 +9,7 @@ import { SocketIoService } from '../../../../core/services/socket-io.service';
 // interfacess
 import IUser, { IUserProfile } from '../../../models/user.entity';
 import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
-import { ICreateNewChatSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -219,6 +219,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
         if(!isChatExist) {
           this.chatListsData = [chat, ...this.chatListsData];
           this.displayChatLists = this.chatListsData;
+          this.searchInput.nativeElement.value = "";
         }
 
         this.router.navigate(["/chat", chat.chatId]);
@@ -230,11 +231,24 @@ export class ChatComponent implements AfterViewInit, OnInit {
   }
 
   createNewGroup() {
-    if(this.newGroupForm.invalid) return;
+    if(this.newGroupForm.invalid || !this.groupMembers.length) return;
 
     const groupName: string = this.newGroupForm.value.groupName;
 
-    console.log(groupName);
-    
+    const createNewGroupAPIResponse$: Observable<ICreateNewGroupSuccessfullAPIResponse> = this.chatService.createNewGroupChat(groupName, this.groupMembers);
+
+    createNewGroupAPIResponse$.subscribe({
+      next: (res) => {
+        this.openOrCloseNewChatOrGroupChatModal();
+        this.groupMembers = [];
+
+        const newGroupChat = res.data;
+
+        this.chatListsData = [newGroupChat, ...this.chatListsData];
+        this.displayChatLists = this.chatListsData;
+        this.searchInput.nativeElement.value = "";
+      },
+      error: (err) => {  }
+    });
   }
 }

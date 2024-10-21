@@ -5,5 +5,6 @@ export enum UserAPIEndPoint {
     CREATE_NEW_CHAT = "/api/createnewchat",
     GET_ALL_CHATS = "/api/chats",
     GET_MESSAGES_OF_CHAT = "/api/messages/",
-    SEND_MESSAGE = "/api/sendmessage/"
+    SEND_MESSAGE = "/api/sendmessage/",
+    CREATE_NEW_GROUP = "/api/createnewgroupchat",
 }

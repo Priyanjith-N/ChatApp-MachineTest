@@ -93,6 +93,8 @@ export class LoginFormComponent {
           const errObj: IValidationError = err as IValidationError;
 
           this.loginForm.get(errObj.errorField)?.setErrors({ message: errObj.message });
+
+          this.loginForm.markAllAsTouched();
         }
       }
   });

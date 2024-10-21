@@ -131,7 +131,7 @@
                         <div class="flex items-center gap-4 max-w-full">
                             <div class="flex-initial">
                                 @if(chat.type === "group") {
-                                    <img class="w-[44px] rounded-full h-auto" [src]="chat.groupProfilePicture" alt="">
+                                    <img class="w-[44px] rounded-full h-auto" src="/icons/groupProfile.png" alt="">
                                 }@else {
                                     <img class="w-[44px] rounded-full h-auto" [src]="getReciverProfileData(chat)?.profilePicture" alt="">
                                 }
