@@ -89,6 +89,8 @@ export default class UserRepository implements IUserRepositroy {
     }
 
     private commonAggratePiplineForMessage() {
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
         return [
             {
                 $lookup: {
@@ -232,27 +234,43 @@ export default class UserRepository implements IUserRepositroy {
 
     async getAllMessagesWithChatId(chatId: string): Promise<IMessagesGroupedByDate[] | never> {
         try {
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
             return await Messages.aggregate([
                 {
                     $match: {
                         chatId: new mongoose.Types.ObjectId(chatId)
                     }
                 },
-                ...this.commonAggratePiplineForMessage(), 
+                ...this.commonAggratePiplineForMessage(),
+                {
+                    $addFields: {
+                      dateConvertedToLocalDate: {
+                        $dateFromString: {
+                          dateString: {
+                            $dateToString: {
+                              date: '$createdAt', 
+                              timezone: userTimezone
+                            }
+                          }
+                        }
+                      }
+                    }
+                },
                 {
                     $group: {
                       _id: {
                         day: {
-                          $dayOfMonth: '$createdAt'
+                          $dayOfMonth: '$dateConvertedToLocalDate'
                         }, 
                         month: {
                           $dateToString: {
                             format: '%B', 
-                            date: '$createdAt'
+                            date: '$dateConvertedToLocalDate'
                           }
                         }, 
                         year: {
-                          $year: '$createdAt'
+                          $year: '$dateConvertedToLocalDate'
                         }
                       }, 
                       createdAt: {
@@ -265,7 +283,8 @@ export default class UserRepository implements IUserRepositroy {
                 }, 
                 {
                     $project: {
-                      _id: 0
+                      _id: 0,
+                      dateConvertedToLocalDate: 0
                     }
                 },
                 {
