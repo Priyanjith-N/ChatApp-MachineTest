@@ -16,6 +16,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
 import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 import { UserProfileManagementService } from '../../../../core/services/user-profile-management.service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
@@ -25,7 +26,8 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    FormateTimePipe
+    FormateTimePipe,
+    ReactiveFormsModule
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css'
@@ -44,14 +46,27 @@ export class ChatComponent implements AfterViewInit, OnInit {
   private searchUserInput!: ElementRef<HTMLInputElement>;
 
   newChatOrGroupChatModal: boolean = false;
+  newGroupChatModal: boolean = false;
+  createGroupModal: boolean = false;
   private chatListsData: IChatWithParticipantDetails[] = [];
   displayChatLists: IChatWithParticipantDetails[] = [];
   private listOfUsersData: IUserProfile[] = [];
   displayListOfUsers: IUserProfile[] = [];
   currentUserProfile: IUserProfile | null = null;
 
+  groupMembers: string[] = [];
+  newGroupForm: FormGroup;
+
   constructor() {
+    this.newGroupForm = new FormGroup({
+      groupName: new FormControl("", [Validators.required])
+    });
+
     this.getAllChats();
+  }
+
+  createNewGroupModal() {
+    this.createGroupModal = true;
   }
 
   searchUserInChat(event: Event) {
@@ -63,6 +78,19 @@ export class ChatComponent implements AfterViewInit, OnInit {
       const getReciverProfileData = this.getReciverProfileData(chat);
       return getReciverProfileData && (getReciverProfileData.displayName.toLowerCase().startsWith(searchText) || getReciverProfileData.phoneNumber.startsWith(searchText));
     })
+  }
+
+  isInNewGroup(userId: string) {
+    if(this.groupMembers.find((_id) => _id === userId)) return true;
+    return false;
+  }
+
+  addToGroupMember(userId: string) {
+    if(this.isInNewGroup(userId)) {
+      this.groupMembers = this.groupMembers.filter((_id) => _id !== userId); // remove added user
+    }else{
+      this.groupMembers.push(userId); // addes new member
+    }
   }
 
   private getAllChats() {
@@ -129,8 +157,25 @@ export class ChatComponent implements AfterViewInit, OnInit {
     chat.unReadMessages = 0;
   }
 
+  newGroupChatModalOpen() {
+    this.newChatOrGroupChatModal = false;
+    this.newGroupChatModal = true;
+    setTimeout(() => {
+      if (this.searchUserInput) {
+        this.searchUserInput.nativeElement.focus();
+      }
+    });
+  }
+
   openOrCloseNewChatOrGroupChatModal() {
-    this.newChatOrGroupChatModal = !this.newChatOrGroupChatModal;
+    if(!this.newChatOrGroupChatModal && !this.newGroupChatModal) {
+      this.newChatOrGroupChatModal = true;
+    }else{
+      this.newGroupForm.reset();
+      this.newChatOrGroupChatModal = false;
+      this.newGroupChatModal = false;
+      this.createGroupModal = false;
+    }
 
     if(this.newChatOrGroupChatModal) {
       setTimeout(() => {
@@ -158,7 +203,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
 
     const searchText: string = inputElement.value.toString();
 
-    this.displayListOfUsers = this.listOfUsersData.filter((user) => (user.userName.toLowerCase().startsWith(searchText) || user.displayName.toLowerCase().startsWith(searchText) || user.phoneNumber.toLowerCase().startsWith(searchText)));
+    this.displayListOfUsers = this.listOfUsersData.filter((user) => (user.displayName.toLowerCase().startsWith(searchText) || user.phoneNumber.toLowerCase().startsWith(searchText)));
   }
 
   startNewChat(reciverId: string) {
@@ -182,5 +227,14 @@ export class ChatComponent implements AfterViewInit, OnInit {
         this.newChatOrGroupChatModal = false;
       }
     });
+  }
+
+  createNewGroup() {
+    if(this.newGroupForm.invalid) return;
+
+    const groupName: string = this.newGroupForm.value.groupName;
+
+    console.log(groupName);
+    
   }
 }

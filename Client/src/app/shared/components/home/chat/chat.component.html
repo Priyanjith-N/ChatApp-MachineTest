@@ -17,7 +17,7 @@
                                     <input #searchUserInput (keyup)="searchToStartOrCreateNewGroupChatOrChat($event);" class="w-full py-1 pl-2 text-sm border border-[#3B3B3B] border-b-white bg-[#222222] text-white font-normal outline-none rounded-[5.07px] placeholder:text-[#979797] focus:border-b-2 focus:border-b-[#1DAA61]" placeholder="Search name or number" type="text">
                                 </div>
                                 <div class="overflow-y-auto max-h-[60vh] chatSection">
-                                    <div class="py-1.5 px-3 mr-1 rounded-[5.07px] hover:bg-[#383838]">
+                                    <div (click)="newGroupChatModalOpen();" class="py-1.5 px-3 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                                         <div class="flex items-center gap-4 max-w-full text-sm">
                                             <div class="flex-initial p-[6px] bg-[#383838] rounded-full">
                                                 <img class="w-[24px] rounded-full h-auto" src="/icons/groupIcon.png" alt="">
@@ -45,6 +45,72 @@
                                         </div>
                                     }
                                 </div>
+                            </div>
+                        }@else if(newGroupChatModal){
+                            <div (click)="stopEventBubbleing($event);" class="absolute z-50 left-0 max-w-[20vw] min-w-[20vw] top-full mt-1.5 rounded-[8px] bg-[#2C2C2C] shadow-[0_4px_8px_rgba(0,0,0,0.1),0_8px_16px_rgba(0,0,0,0.2)] pl-4 pt-4 pr-1.5 pb-1.5">
+                                <div class="mb-4">
+                                    <p class="text-xl font-medium">New group</p>
+                                </div>
+                                @if(createGroupModal) {
+                                    <form [formGroup]="newGroupForm"  (submit)="createNewGroup();" >
+                                        <div class="pr-4 mb-3">
+                                            <label for="groupName" class="py-2 text-sm text-white">Provide a group name</label>
+                                            <input formControlName="groupName" id="groupName" class="w-full py-1 pl-2 text-sm border border-[#3B3B3B] border-b-white bg-[#222222] text-white font-normal outline-none rounded-[5.07px] placeholder:text-[#979797] focus:border-b-2 focus:border-b-[#1DAA61]" placeholder="Group Name" type="text">
+                                        </div>
+    
+                                        <div class="mt-5 mb-2 pr-1.5 flex gap-1.5 select-none">
+                                            <button type="submit" class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#1E9D5B] bg-[#1DAA61] text-black text-center rounded-md outline-none">
+                                                <div >Create</div>
+                                            </button>
+                                            <div (click)="openOrCloseNewChatOrGroupChatModal();" class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#404140] bg-[#383838] text-center rounded-md">Cancel</div>
+                                        </div>
+                                    </form>
+                                }@else {
+                                    <div class="pr-4 mb-3">
+                                        <input #searchUserInput (keyup)="searchToStartOrCreateNewGroupChatOrChat($event);" class="w-full py-1 pl-2 text-sm border border-[#3B3B3B] border-b-white bg-[#222222] text-white font-normal outline-none rounded-[5.07px] placeholder:text-[#979797] focus:border-b-2 focus:border-b-[#1DAA61]" placeholder="Search name or number" type="text">
+                                    </div>
+    
+                                    @if(groupMembers.length) {
+                                        <div class="my-4 pr-1.5 flex gap-1.5">
+                                            <div (click)="createNewGroupModal();" class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#1E9D5B] bg-[#1DAA61] text-black text-center rounded-md">Next</div>
+                                            <div class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#404140] bg-[#383838] text-center rounded-md">Cancel</div>
+                                        </div>
+                                    }
+    
+                                    <div class="overflow-y-auto max-h-[60vh] chatSection">
+                                        @for (user of displayListOfUsers; track $index) {
+                                            <div (click)="addToGroupMember(user._id)" class="py-1.5 px-3 relative mr-1 rounded-[5.07px] hover:bg-[#383838]">
+                                                <div class="flex items-center gap-4 max-w-full text-sm">
+                                                    <div class="flex-initial">
+                                                        <img class="w-[36px] rounded-full h-auto" [src]="user.profilePicture" alt="">
+                                                    </div>
+                                                    <div class="flex-auto">
+                                                        <div class="justify-between w-full">
+                                                            <p class="font-medium">{{ user.displayName }}</p>
+                                                            <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap max-w-[190px]">{{ user.about }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="absolute top-1/2 -translate-y-1/2 right-4">
+                                                        <label class="inline-flex items-center cursor-pointer">
+                                                            <input type="checkbox" class="hidden peer hy" [checked]="isInNewGroup(user._id)" />
+                                                            <div (click)="addToGroupMember(user._id)" class="w-4 h-4 rounded-[5.07px] peer-checked:bg-[#1DAA61] peer-checked:text-black peer-checked:flex peer-checked:items-center peer-checked:justify-center transition-all duration-200 bg-[#404140]" >
+                                                                @if(isInNewGroup(user._id)) {
+                                                                    <svg
+                                                                        class="text-black w-4 h-4" 
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                                                                    >
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                }
+                                                            </div>
+                                                          </label>                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
