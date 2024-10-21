@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -36,7 +36,7 @@ import { Database, Picker } from 'emoji-picker-element';
   templateUrl: './view-chat-messages.component.html',
   styleUrl: './view-chat-messages.component.css'
 })
-export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   private chatService: ChatService = inject(ChatService);
   private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -49,6 +49,9 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   @ViewChild("emojiDiv")
   private emojitDiv!: ElementRef<HTMLDivElement>;
+  
+  @ViewChild("viewChatDiv")
+  private viewChatDiv!: ElementRef<HTMLDivElement>;
 
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
@@ -72,6 +75,18 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     this.chatForm = new FormGroup({
       content: new FormControl("")
     });
+  }
+
+  ngAfterViewChecked(): void {
+    
+    console.log( 'sfkdjl');
+    this.scrollToBottom();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    
+    if (changes['messages']) {
+    }
   }
 
   showOrCloseEmojiPicker() {
@@ -166,6 +181,12 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngOnDestroy(): void {
     this.leaveRoom();
+  }
+
+  scrollToBottom() {
+    if (this.viewChatDiv) {
+      this.viewChatDiv.nativeElement.scrollTop = this.viewChatDiv.nativeElement.scrollHeight;
+    }
   }
 
   private getMessages() {
