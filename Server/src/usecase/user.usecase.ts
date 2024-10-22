@@ -138,7 +138,14 @@ export default class UserUseCase implements IUserUseCase {
             
             const reciverId: string = chat.participants.find((userId) => userId.toString() !== senderId)!;
 
-            const isRead: boolean = isReciverInChat(chat.chatId.toString(), reciverId.toString());
+            let isRead: boolean = true;
+
+            for(const userId of chat.participants) {
+                if(!isReciverInChat(chat.chatId.toString(), userId.toString())) {
+                    isRead = false;
+                    break;
+                }
+            }
             
             
             const messageCredentials: IMessageCredentials = {
@@ -194,7 +201,7 @@ export default class UserUseCase implements IUserUseCase {
             const newChat: IChat = await this.userRepository.createNewGroupChat(groupName, participants, groupAdmin);
 
             const createdChat: IChatWithParticipantDetails = await this.userRepository.getChatByIdWithParticipantDetails(newChat._id, groupAdmin);
-
+            
             createdChat.participants.forEach((userId) => {
                 if(userId.toString() !== groupAdmin) {
                     emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, createdChat);

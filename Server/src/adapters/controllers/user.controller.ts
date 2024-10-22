@@ -105,8 +105,6 @@ export default class UserController implements IUserController {
 
     async sendMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
         try {
-            console.log(req.file, req.body);
-            
             const file: Express.MulterS3.File | undefined = req.file as Express.MulterS3.File;
             const { content, type } = req.body;
             const message: IMessageWithSenderDetails = await this.userUseCase.sendMessage(req.params.chatId, req.id, content, type, file);
