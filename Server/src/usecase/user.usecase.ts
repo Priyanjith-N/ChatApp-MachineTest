@@ -122,13 +122,13 @@ export default class UserUseCase implements IUserUseCase {
         }
     }
 
-    async sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined): Promise<IMessageWithSenderDetails | never> {
+    async sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined, file: Express.MulterS3.File | undefined): Promise<IMessageWithSenderDetails | never> {
         try {
             if(!senderId || !isObjectIdOrHexString(senderId)) throw new RequiredCredentialsNotGiven(ErrorMessage.REQUIRED_CREDENTIALS_NOT_GIVEN);
 
             if(!chatId || !isObjectIdOrHexString(chatId)) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
 
-            if(!content || !type || ((type !== "text") && (type !== "image") && (type !== "video") && (type !== "document"))) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_MESSAGE, type: ErrorField.MESSAGE });
+            if((!content && !file) || !type || ((type !== "text") && (type !== "image") && (type !== "video") && (type !== "document"))) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_MESSAGE, type: ErrorField.MESSAGE });
 
             const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, senderId);
 
@@ -143,10 +143,19 @@ export default class UserUseCase implements IUserUseCase {
             
             const messageCredentials: IMessageCredentials = {
                 chatId,
-                content,
                 senderId,
                 type,
-                isRead
+                isRead,
+                createdAt: new Date(Date.now()),
+            }
+
+            if(content) { // if text message this
+                messageCredentials.content = content;
+            }else{ // if muiltimedia this
+                messageCredentials.file = {
+                    key: file!.key,
+                    url: file!.location
+                }
             }
             
             const newMessage: IMessage = await this.userRepository.createNewMessage(messageCredentials);
@@ -170,6 +179,8 @@ export default class UserUseCase implements IUserUseCase {
 
             return createdMessage;
         } catch (err: any) {
+            console.log(err);
+            
             throw err;
         }
     }

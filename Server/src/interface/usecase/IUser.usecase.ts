@@ -10,6 +10,6 @@ export default interface IUserUseCase {
     createNewChat(senderId: string | undefined, reciverId: string | undefined): Promise<IChatWithParticipantDetails | never>;
     getAllChatsOfCurrentUser(_id: string | undefined): Promise<IChatWithParticipantDetails[] | never>;
     getAllMessageOfChat(chatId: string | undefined, _id: string | undefined): Promise<IMessagesAndChatData | never>;
-    sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined): Promise<IMessageWithSenderDetails | never>;
+    sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined, file: Express.MulterS3.File | undefined): Promise<IMessageWithSenderDetails | never>;
     createNewGroupChat(groupName: string | undefined, participants: string[] | undefined, groupAdmin: string | undefined): Promise<IChatWithParticipantDetails | never>;
 }

@@ -316,14 +316,7 @@ export default class UserRepository implements IUserRepositroy {
 
     async createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage | never> {
         try {
-            const newMessage = new Messages({
-                chatId: messageCredentials.chatId,
-                content: messageCredentials.content,
-                createdAt: new Date(Date.now()),
-                senderId: messageCredentials.senderId,
-                type: messageCredentials.type,
-                isRead: messageCredentials.isRead
-            });
+            const newMessage = new Messages(messageCredentials);
 
             await newMessage.save();
 

@@ -32,7 +32,12 @@ export interface IMessagesAndChatData {
 export interface IMessageCredentials {
     chatId: string;
     senderId: string;
-    content: string;
+    content?: string;
+    file?: {
+        key: string,
+        url: string
+    };
     type: "text" | "image" | "video" | "document";
     isRead: boolean;
+    createdAt: Date;
 }
