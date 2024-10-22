@@ -22,3 +22,8 @@ export interface IChatWithParticipantDetails extends IChat {
     lastMessageData: IMessage;
     unReadMessages: number;
 }
+
+export interface JoinChatMessageRead {
+    updatedChat: IChatWithParticipantDetails;
+    messageReadedUserId: string;
+}

@@ -16,6 +16,6 @@ export default interface IUserRepositroy {
     createNewMessage(messageCredentials: IMessageCredentials): Promise<IMessage | never>;
     getMessageById(_id: string): Promise<IMessageWithSenderDetails | never>;
     updateLastMessageOfChat(chatId: string, messageId: string): Promise<void | never>;
-    makeMessageAsRead(chatId: string, reciverId: string): Promise<void | never>;
+    makeMessageAsRead(chatId: string, reciverId: string, totalNumberOfParticipants: number): Promise<boolean | never>;
     createNewGroupChat(groupName: string, participants: string[], groupAdmin: string): Promise<IChat | never>;
 }

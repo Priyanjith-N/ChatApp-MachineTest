@@ -27,6 +27,12 @@ const MessageSchema: Schema = new Schema(
             enum: ['text', 'image', 'video', 'document'],
             required: true
         },
+        messageReadedParticipants: [
+            { 
+                type: Schema.Types.ObjectId, 
+                required: true 
+            }
+        ],
         isRead: { 
             type: Boolean,
             default: false,

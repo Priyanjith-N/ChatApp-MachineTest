@@ -11,6 +11,7 @@ export interface IMessage {
         url: string
     };
     type: "text" | "image" | "video" | "document";
+    messageReadedParticipants: string[];
     isRead: boolean;
     createdAt: Date;
 }
@@ -38,6 +39,7 @@ export interface IMessageCredentials {
         url: string
     };
     type: "text" | "image" | "video" | "document";
+    messageReadedParticipants: string[];
     isRead: boolean;
     createdAt: Date;
 }

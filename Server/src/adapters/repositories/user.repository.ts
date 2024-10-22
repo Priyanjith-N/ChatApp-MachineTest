@@ -39,6 +39,11 @@ export default class UserRepository implements IUserRepositroy {
                             $ne: [
                               '$$message.senderId', new mongoose.Types.ObjectId(currentUserId)
                             ]
+                          },
+                          {
+                            $not: {
+                              $in: [new mongoose.Types.ObjectId(currentUserId), "$$message.messageReadedParticipants"]
+                            }
                           }
                         ]
                       }
@@ -351,9 +356,13 @@ export default class UserRepository implements IUserRepositroy {
         }
     }
 
-    async makeMessageAsRead(chatId: string, reciverId: string): Promise<void | never> {
+    async makeMessageAsRead(chatId: string, userId: string, totalNumberOfParticipants: number): Promise<boolean | never> {
         try {
-            await Messages.updateMany({ chatId, senderId: { $ne: reciverId }, isRead: false }, { $set: { isRead: true } });
+            await Messages.updateMany({ chatId, senderId: { $ne: userId }, isRead: false }, { $addToSet: { messageReadedParticipants: userId } }); // add user if he or she didn't read the message
+
+            const updateResult = await Messages.updateMany({ chatId, senderId: { $ne: userId }, isRead: false, $expr: { $eq: [{ $size: "$messageReadedParticipants" }, totalNumberOfParticipants] } }, { $set: { isRead: true } }); // update the messages if the current user is the last one to see the message
+
+            return updateResult.modifiedCount !== 0;
         } catch (err: any) {
             throw err;
         }

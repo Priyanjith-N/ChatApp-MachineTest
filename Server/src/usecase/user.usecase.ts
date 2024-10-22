@@ -8,7 +8,7 @@ import { IMessage, IMessageCredentials, IMessagesAndChatData, IMessagesGroupedBy
 
 // errrors
 import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
-import { IChat, IChatWithParticipantDetails } from "../entity/IChat.entity";
+import { IChat, IChatWithParticipantDetails, JoinChatMessageRead } from "../entity/IChat.entity";
 import ChatError from "../errors/chatError.error";
 
 // socket
@@ -101,13 +101,17 @@ export default class UserUseCase implements IUserUseCase {
 
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
 
-            await this.userRepository.makeMessageAsRead(chat.chatId, _id); // make all the message for the current user as read
+            const isRead: boolean = await this.userRepository.makeMessageAsRead(chat.chatId, _id, chat.participants.length); // make all the message for the current user as read
 
-            chat.participants.forEach((userId) => {
-                if(userId.toString() !== _id) {
-                    emitSocketEvent<string>(userId.toString(), ChatEventEnum.MESSAGE_READ_EVENT, chat.chatId);
-                }
-            })
+            const updatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, _id); // if all of them read last message it should be send to front end
+
+            if(isRead) {
+                chat.participants.forEach((userId) => {
+                    if(userId.toString() !== _id) {
+                        emitSocketEvent<JoinChatMessageRead>(userId.toString(), ChatEventEnum.MESSAGE_READ_EVENT, { updatedChat, messageReadedUserId: _id });
+                    }
+                });
+            }
 
             const messages: IMessagesGroupedByDate[] = await this.userRepository.getAllMessagesWithChatId(chatId);
 
@@ -131,8 +135,6 @@ export default class UserUseCase implements IUserUseCase {
             if((!content && !file) || !type || ((type !== "text") && (type !== "image") && (type !== "video") && (type !== "document"))) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_MESSAGE, type: ErrorField.MESSAGE });
 
             const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, senderId);
-
-            
             
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
             
@@ -140,11 +142,15 @@ export default class UserUseCase implements IUserUseCase {
 
             let isRead: boolean = true;
 
+            const messageReadedParticipants: string[] = [];
+
             for(const userId of chat.participants) {
                 if(!isReciverInChat(chat.chatId.toString(), userId.toString())) {
                     isRead = false;
-                    break;
+                    continue;
                 }
+
+                messageReadedParticipants.push(userId);
             }
             
             
@@ -152,6 +158,7 @@ export default class UserUseCase implements IUserUseCase {
                 chatId,
                 senderId,
                 type,
+                messageReadedParticipants,
                 isRead,
                 createdAt: new Date(Date.now()),
             }
@@ -173,16 +180,17 @@ export default class UserUseCase implements IUserUseCase {
             
             const updatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, senderId); // this chat updates the current user
 
-            const chatToBeEmittedToReciver: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, reciverId); // this chat updates the reciver user
-
-            chat.participants.forEach((userId) => {
+            for(const userId of chat.participants) {
                 if(userId.toString() !== senderId) {
+                    const chatToBeEmittedToReciver: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chat.chatId, userId.toString()); // this chat updates the reciver user
+
                     emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, chatToBeEmittedToReciver); // every reciver gets the reverchat
+
                     emitSocketEvent<IMessageWithSenderDetails>(userId.toString(), ChatEventEnum.MESSAGE_RECEIVED_EVENT, createdMessage);
                 }else{
                     emitSocketEvent<IChatWithParticipantDetails>(userId.toString(), ChatEventEnum.NEW_CHAT_EVENT, updatedChat); // for current user chat update and message is updated form front-end
                 }
-            });
+            }
 
             return createdMessage;
         } catch (err: any) {
