@@ -12,8 +12,15 @@ const MessageSchema: Schema = new Schema(
             required: true 
         },
         content: { 
-            type: String, 
-            required: true 
+            type: String
+        },
+        file: {
+            key: {
+                type: String
+            },
+            url: {
+                type: String
+            }
         },
         type: { 
             type: String, 
