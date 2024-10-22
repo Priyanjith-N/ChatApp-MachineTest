@@ -39,9 +39,13 @@
                 @for (message of dayByMessage.messages; track $index) {
                     @if(isMessagedByCurrentUser(message)) {
                         <div class="flex justify-end">
-                            <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
+                            <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[30%] h-auto">
                                 @if(message.type === "text") {
                                     <p class="break-words">{{ message.content }}</p>
+                                }@else if(message.file) {
+                                    <div class="mb-2">
+                                        <img class="w-full h-auto" [src]="message.file.url" alt="">
+                                    </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
                                     <div>
@@ -62,6 +66,10 @@
                             <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
                                 @if(message.type === "text") {
                                     <p class="break-words">{{ message.content }}</p>
+                                }@else if(message.file) {
+                                    <div class="mb-2">
+                                        <img class="w-full h-auto" [src]="message.file.url" alt="">
+                                    </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
                                     <div>
@@ -85,7 +93,7 @@
                     </div>
                     <label for="file">
                         <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
-                            <input id="file" type="file" class="hidden" hidden (change)="onFileSelected($event)" />
+                            <input id="file" type="file" class="hidden" (change)="onFileSelected($event)" />
                             <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">
                         </div> 
                     </label>

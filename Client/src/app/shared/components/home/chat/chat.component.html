@@ -161,6 +161,8 @@
                                             <div class="max-w-[200px] overflow-hidden">
                                                 @if(chat.lastMessageData.type === "text") {
                                                     <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.content }}</p>
+                                                }@else {
+                                                    <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.type }}</p>
                                                 }
                                             </div>
                                         </div>

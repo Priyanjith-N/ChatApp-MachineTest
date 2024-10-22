@@ -53,6 +53,9 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   @ViewChild("viewChatDiv")
   private viewChatDiv!: ElementRef<HTMLDivElement>;
 
+  @ViewChild("fileUpload")
+  private fileUpload!: ElementRef<HTMLInputElement>;
+
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
   chatForm: FormGroup;
@@ -218,15 +221,39 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   sendMessage() {
-    const { content } = this.chatForm.value;
+    let { content } = this.chatForm.value;
+    let type: "text" | "image" | "video" | "document" = "text"
 
     if(!content && !this.selectedFile) return;
 
-    const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.chatService.sendMessage(content, "text", this.roomId);
+    if(this.selectedFile) {
+      content = "";
+
+      const fileTypeMap: Record<string, Set<string>> = {
+        "image": new Set<string>(["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml"]),
+        "video": new Set<string>(["video/mp4", "video/avi", "video/mov", "video/x-matroska", "video/x-flv"]),
+        "document": new Set<string>(["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"]),
+      };
+
+      // Extract the file extension from the file name
+      const mimeType = this.selectedFile.type;
+
+      for(const key in fileTypeMap) {
+        if(fileTypeMap[key].has(mimeType)) {
+          type = key as "text" | "image" | "video" | "document";
+        }
+      }
+    }
+
+    const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.chatService.sendMessage(content, this.selectedFile, type, this.roomId);
 
     sendMessageAPIResponse$.subscribe({
       next: (res) => {
         this.chatForm.reset();
+        this.selectedFile = undefined;
+        if(this.fileUpload) {
+          this.fileUpload.nativeElement.value = "";
+        }
 
         const newMessage: IMessageWithSenderDetails = res.data;
 

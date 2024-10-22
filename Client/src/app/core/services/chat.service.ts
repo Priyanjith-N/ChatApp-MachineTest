@@ -42,10 +42,20 @@ export class ChatService {
     return getMessagesOfChatAPIResponse$;
   }
 
-  sendMessage(content: string, type: "text" | "image" | "video" | "document", chatId: string): Observable<ISendMessageSuccessfullAPIResponse> {
+  sendMessage(content: string, muiltiMediaFiles: File | undefined, type: "text" | "image" | "video" | "document", chatId: string): Observable<ISendMessageSuccessfullAPIResponse> {
    const api: string = `${this.backendDomain}${UserAPIEndPoint.SEND_MESSAGE}${chatId}`;
+
+   const body: FormData = new FormData();
+
+   if(content) {
+    body.append("content", content);
+  }else if(muiltiMediaFiles) {
+     body.append("muiltiMediaFiles", muiltiMediaFiles, muiltiMediaFiles.name);
+   }
+
+   body.append("type", type);
    
-   const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.httpClient.post<ISendMessageSuccessfullAPIResponse>(api, { content, type });
+   const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.httpClient.post<ISendMessageSuccessfullAPIResponse>(api, body);
 
    return sendMessageAPIResponse$;
   }
