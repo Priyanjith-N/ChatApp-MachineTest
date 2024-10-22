@@ -10,7 +10,7 @@ import { SocketIoService } from '../../../../core/services/socket-io.service';
 import IUser, { IUserProfile } from '../../../models/user.entity';
 import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
 import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
-import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
+import { IChatWithParticipantDetails, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
@@ -127,12 +127,12 @@ export class ChatComponent implements AfterViewInit, OnInit {
       }
     });
 
-    this.socketIoService.on<string>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
-      next: (chatId) => {
-        const chatToMakeMessageAsRead = this.chatListsData.find((chat) => chat.chatId === chatId);
+    this.socketIoService.on<JoinChatMessageRead>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
+      next: ({ updatedChat, messageReadedUserId }) => {
+        const idxOfCurrentChat = this.chatListsData.findIndex((chat) => chat.chatId === updatedChat.chatId);
 
-        if(chatToMakeMessageAsRead) {
-          chatToMakeMessageAsRead.lastMessageData.isRead = true;
+        if((idxOfCurrentChat !== -1) && (updatedChat.participants.length === (updatedChat.lastMessageData.messageReadedParticipants.length))) {
+          this.chatListsData.splice(idxOfCurrentChat, 1, updatedChat); // relplace old chat with new chat
         }
       },
       error: (err) => {  }

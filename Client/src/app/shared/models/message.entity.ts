@@ -10,6 +10,7 @@ export interface IMessage {
         url: string
     };
     type: "text" | "image" | "video" | "document";
+    messageReadedParticipants: string[];
     isRead: boolean;
     createdAt: Date;
 }

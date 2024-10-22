@@ -28,3 +28,8 @@ export interface IMessagesAndChatData {
     messages: IMessagesGroupedByDate[];
     chat: IChatWithParticipantDetails;
 }
+
+export interface JoinChatMessageRead {
+    updatedChat: IChatWithParticipantDetails;
+    messageReadedUserId: string;
+}

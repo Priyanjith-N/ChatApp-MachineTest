@@ -11,7 +11,7 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 // interfaces
 import { IMessagesGroupedByDate, IMessageWithSenderDetails } from '../../../models/message.entity';
 import { IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
-import { IChatWithParticipantDetails } from '../../../models/IChat.entity';
+import { IChatWithParticipantDetails, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { IUserProfile } from '../../../models/user.entity';
 
 // pipes
@@ -150,11 +150,17 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       }
     });
 
-    this.socketIoService.on<string>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
-      next: (chatId) => { // this will only emited by other person when he or she is in the room or cliked your chat
+    this.socketIoService.on<JoinChatMessageRead>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
+      next: ({ updatedChat, messageReadedUserId }) => { // this will only emited by other person when he or she is in the room or cliked your chat
         for(const dayMessage of this.messages) {
           for(const message of dayMessage.messages) {
-            message.isRead = true;
+            if(!message.messageReadedParticipants.includes(messageReadedUserId)) { // need to add user to the messages where seen by him 
+              const newReadedParticipantsLength = message.messageReadedParticipants.push(messageReadedUserId);
+
+              if(newReadedParticipantsLength === updatedChat.participants.length) { // if the readed length is equal to the number of users present then all of them readed so make blue tick
+                message.isRead = true;
+              }
+            }
           }
         }
       },
