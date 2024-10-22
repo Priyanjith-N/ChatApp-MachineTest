@@ -33,7 +33,7 @@
                                         <div (click)="startNewChat(user._id);" class="py-1.5 px-3 mr-1 rounded-[5.07px] hover:bg-[#383838]">
                                             <div class="flex items-center gap-4 max-w-full text-sm">
                                                 <div class="flex-initial">
-                                                    <img class="w-[36px] rounded-full h-auto" [src]="user.profilePicture" alt="">
+                                                    <img class="w-[36px] rounded-full h-auto" [src]="user.profilePicture.url" alt="">
                                                 </div>
                                                 <div class="flex-auto">
                                                     <div class="justify-between w-full">
@@ -82,7 +82,7 @@
                                             <div (click)="addToGroupMember(user._id)" class="py-1.5 px-3 relative mr-1 rounded-[5.07px] hover:bg-[#383838]">
                                                 <div class="flex items-center gap-4 max-w-full text-sm">
                                                     <div class="flex-initial">
-                                                        <img class="w-[36px] rounded-full h-auto" [src]="user.profilePicture" alt="">
+                                                        <img class="w-[36px] rounded-full h-auto" [src]="user.profilePicture.url" alt="">
                                                     </div>
                                                     <div class="flex-auto">
                                                         <div class="justify-between w-full">
@@ -133,7 +133,7 @@
                                 @if(chat.type === "group") {
                                     <img class="w-[44px] rounded-full h-auto" src="/icons/groupProfile.png" alt="">
                                 }@else {
-                                    <img class="w-[44px] rounded-full h-auto" [src]="getReciverProfileData(chat)?.profilePicture" alt="">
+                                    <img class="w-[44px] rounded-full h-auto" [src]="getReciverProfileData(chat)?.profilePicture?.url" alt="">
                                 }
                             </div>
                             <div class="flex-auto">

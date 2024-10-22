@@ -5,7 +5,7 @@
                 @if(chat && chat.type === "group") {
                     <img class="w-[44px] rounded-full h-auto" src="/icons/groupProfile.png" alt="">
                 }@else if(chat) {
-                    <img class="w-[44px] rounded-full h-auto" [src]="( chat.participantsData | getReciverProfileData )?.profilePicture" alt="">
+                    <img class="w-[44px] rounded-full h-auto" [src]="( chat.participantsData | getReciverProfileData )?.profilePicture?.url" alt="">
                 }
             </div>
             <div class="flex items-baseline justify-between w-full">

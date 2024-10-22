@@ -21,7 +21,7 @@
             @if(isRouteActive("/profile")) {
                 <div class="absolute h-1/2 w-1 bg-[#1DAA61] left-0 rounded-full top-1/2 -translate-y-1/2"></div>
             }
-            <img class="w-[20px] h-[20px] rounded-full" [src]="userProfile?.profilePicture" alt="">
+            <img class="w-[20px] h-[20px] rounded-full" [src]="userProfile?.profilePicture?.url" alt="">
         </div>
     </div>
 </div>
