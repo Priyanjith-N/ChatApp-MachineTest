@@ -83,9 +83,12 @@
                         <img class="w-[20px] h-auto" src="/icons/emojiIcon.png" alt="">
                         <div #emojiDiv class="absolute duration-300 ease-in-out -top-4 -translate-y-full -translate-x-1/2 hidden" [class.display]="showEmojiPicker" ></div>
                     </div>
-                    <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
-                        <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">
-                    </div> 
+                    <label for="file">
+                        <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
+                            <input id="file" type="file" class="hidden" hidden (change)="onFileSelected($event)" />
+                            <img class="w-[20px] h-auto" src="/icons/attachFile.png" alt="">
+                        </div> 
+                    </label>
                 </div>
                 <div class="flex-1" >
                     <input #chatMessageInput formControlName="content" type="text" class="w-full py-1.5 bg-transparent border-transparent outline-none placeholder:text-[#979797]" placeholder="Type a message">

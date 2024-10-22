@@ -56,6 +56,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   chat: IChatWithParticipantDetails | undefined;
   messages: IMessagesGroupedByDate[] = [];
   chatForm: FormGroup;
+  selectedFile: File | undefined;
 
   private emojiPicker: Picker;
   showEmojiPicker: boolean = false;
@@ -79,12 +80,6 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    
-    if (changes['messages']) {
-    }
   }
 
   showOrCloseEmojiPicker() {
@@ -111,6 +106,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     this.chat = undefined;
     this.messages = [];
     this.chatForm.reset();
+    this.selectedFile = undefined;
   }
 
   initElements() {
@@ -214,10 +210,17 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     return message.senderId === this.currentUserProfile._id;
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
   sendMessage() {
     const { content } = this.chatForm.value;
 
-    if(!content) return;
+    if(!content && !this.selectedFile) return;
 
     const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.chatService.sendMessage(content, "text", this.roomId);
 
