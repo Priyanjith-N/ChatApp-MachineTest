@@ -116,7 +116,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
       next: (chat) => {
         this.newChatOrGroupChatModal = false;
 
-        if(chat.lastMessage) {
+        if(((chat.type === "one-to-one") && chat.lastMessage) || (chat.type === "group")) {
           const chatsWithoutEmitedChat = this.chatListsData.filter((currentChat) => currentChat._id !== chat._id);
           this.chatListsData = [chat, ...chatsWithoutEmitedChat];
           this.displayChatLists = this.chatListsData;
