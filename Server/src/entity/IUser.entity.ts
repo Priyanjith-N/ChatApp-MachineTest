@@ -5,7 +5,10 @@ export default interface IUser {
     email: string;
     phoneNumber: string;
     password: string;
-    profilePicture: string;
+    profilePicture: {
+        key: string | null,
+        url: string
+    };
     about: string;
     status: "online" | "offline";
 }

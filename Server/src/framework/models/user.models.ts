@@ -23,9 +23,15 @@ const userSchema: Schema = new Schema<IUser>({
         required: true
     },
     profilePicture: {
-        type: String,
-        default: "https://chat-app-muiltimedia-file-storage.s3.ap-south-1.amazonaws.com/defaultImages/no-dp_16.webp",
-        required: true
+        key: {
+            type: String,
+            default: null,
+        },
+        url: {
+            type: String,
+            default: "https://chat-app-muiltimedia-file-storage.s3.ap-south-1.amazonaws.com/defaultImages/no-dp_16.webp",
+            required: true
+        }
     },
     about: {
         type: String,
