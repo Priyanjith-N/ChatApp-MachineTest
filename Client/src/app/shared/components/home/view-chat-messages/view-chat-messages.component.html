@@ -3,7 +3,7 @@
         <div class="flex flex-auto items-center gap-4 max-w-full">
             <div>
                 @if(chat && chat.type === "group") {
-                    <img class="w-[44px] rounded-full h-auto" src="/icons/groupProfile.png" alt="">
+                    <img class="w-[44px] rounded-full h-auto" [src]="chat.groupProfilePicture!.url" alt="">
                 }@else if(chat) {
                     <img class="w-[44px] rounded-full h-auto" [src]="( chat.participantsData | getReciverProfileData )?.profilePicture?.url" alt="">
                 }

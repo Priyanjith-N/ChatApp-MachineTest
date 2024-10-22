@@ -9,7 +9,10 @@ export interface IChat {
     participants: string[]; // User IDs
     type: "one-to-one" | "group";
     groupName?: string;
-    groupProfilePicture?: string;
+    groupProfilePicture?: {
+        key: string | null,
+        url: string
+    };
     groupAdmin?: string;
     lastMessage: string;
     createdAt: Date;
