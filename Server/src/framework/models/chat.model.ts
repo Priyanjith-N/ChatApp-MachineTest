@@ -25,7 +25,12 @@ const ChatSchema: Schema = new Schema(
             type: String
         },
         groupProfilePicture: {
-            type: String
+            key: {
+                type: String,
+            },
+            url: {
+                type: String
+            }
         },
         lastMessage: {
             type: Schema.Types.ObjectId,

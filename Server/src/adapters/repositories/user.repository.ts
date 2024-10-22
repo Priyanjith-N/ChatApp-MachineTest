@@ -374,7 +374,10 @@ export default class UserRepository implements IUserRepositroy {
                 groupAdmin,
                 groupName,
                 participants,
-                groupProfilePicture: "https://chat-app-muiltimedia-file-storage.s3.ap-south-1.amazonaws.com/defaultImages/1729576923503-551802289-group+(1).png",
+                groupProfilePicture: {
+                    key: null,
+                    url: "https://chat-app-muiltimedia-file-storage.s3.ap-south-1.amazonaws.com/defaultImages/1729576923503-551802289-group+(1).png"
+                },
                 type: "group",
             });
 
