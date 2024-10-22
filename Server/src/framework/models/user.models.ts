@@ -24,7 +24,7 @@ const userSchema: Schema = new Schema<IUser>({
     },
     profilePicture: {
         type: String,
-        default: "https://photosqn.com/wp-content/uploads/2024/05/no-dp_16.webp",
+        default: "https://chat-app-muiltimedia-file-storage.s3.ap-south-1.amazonaws.com/defaultImages/no-dp_16.webp",
         required: true
     },
     about: {

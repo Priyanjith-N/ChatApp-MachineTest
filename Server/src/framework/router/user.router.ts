@@ -17,6 +17,7 @@ import UserUseCase from "../../usecase/user.usecase";
 import JWTService from "../utils/jwtService.utils";
 import IUserController from "../../interface/controllers/user.controllers";
 import UserController from "../../adapters/controllers/user.controller";
+import upload from "../utils/s3ConfigurationAndMulterSetup.utils";
 
 // util service
 const jwtService: IJWTService = new JWTService();
@@ -42,7 +43,7 @@ router.get("/chats", userController.getAllChatsOfCurrentUser.bind(userController
 
 router.get("/messages/:chatId", userController.getMessagesOfAchat.bind(userController));
 
-router.post("/sendmessage/:chatId", userController.sendMessage.bind(userController));
+router.post("/sendmessage/:chatId", upload.single("muiltiMediaFiles"), userController.sendMessage.bind(userController));
 
 router.post("/createnewgroupchat", userController.createNewGrooupChat.bind(userController));
 
