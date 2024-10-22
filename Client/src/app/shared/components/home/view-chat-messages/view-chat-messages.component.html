@@ -44,7 +44,7 @@
                                     <p class="break-words">{{ message.content }}</p>
                                 }@else if(message.file) {
                                     <div class="mb-2">
-                                        <img class="w-full h-auto" [src]="message.file.url" alt="">
+                                        <img class="h-auto w-[250px] object-scale-down md:w-full" [src]="message.file.url" alt="">
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
@@ -68,7 +68,7 @@
                                     <p class="break-words">{{ message.content }}</p>
                                 }@else if(message.file) {
                                     <div class="mb-2">
-                                        <img class="w-full h-auto" [src]="message.file.url" alt="">
+                                        <img class="h-auto w-[250px] object-scale-down md:w-full" [src]="message.file.url" alt="">
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
