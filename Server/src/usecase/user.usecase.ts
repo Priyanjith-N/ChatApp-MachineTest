@@ -217,4 +217,18 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async leaveGroupChat(userId: string | undefined, chatId: string | undefined): Promise<void | never> {
+        try {
+            if(!userId || !isObjectIdOrHexString(userId) || !chatId || !isObjectIdOrHexString(chatId)) throw new RequiredCredentialsNotGiven(ErrorMessage.REQUIRED_CREDENTIALS_NOT_GIVEN);
+
+            const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, userId);
+
+            if(!chat || chat.type !== "group") throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
+
+            await this.userRepository.leaveGroupChat(chat.chatId, userId); // make user leave the chat
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

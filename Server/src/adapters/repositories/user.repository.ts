@@ -390,4 +390,13 @@ export default class UserRepository implements IUserRepositroy {
             throw err;
         }
     }
+
+    async leaveGroupChat(chatId: string, userId: string): Promise<void | never> {
+        try {
+            await Chats.updateOne({ chatId }, { $pull: { participants: userId }, $addToSet: { pastParticipants: userId } }); // removie user and adding to past user
+            await Messages.updateMany({ chatId }, { $pull: { messageReadedParticipants: userId } }); // need to remove the userid to match the count for read and non-read messages
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

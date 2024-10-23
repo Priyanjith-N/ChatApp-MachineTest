@@ -16,6 +16,12 @@ const ChatSchema: Schema = new Schema(
                 required: true 
             }
         ],
+        pastParticipants: [
+            { 
+                type: Schema.Types.ObjectId, 
+                required: true 
+            }
+        ],
         type: { 
             type: String, 
             enum: ["one-to-one", "group"], 

@@ -136,4 +136,16 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async leaveGroupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            await this.userUseCase.leaveGroupChat(req.id, req.params.chatId);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }

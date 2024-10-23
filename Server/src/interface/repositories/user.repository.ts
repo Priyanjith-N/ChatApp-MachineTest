@@ -18,4 +18,5 @@ export default interface IUserRepositroy {
     updateLastMessageOfChat(chatId: string, messageId: string): Promise<void | never>;
     makeMessageAsRead(chatId: string, reciverId: string, totalNumberOfParticipants: number): Promise<boolean | never>;
     createNewGroupChat(groupName: string, participants: string[], groupAdmin: string): Promise<IChat | never>;
+    leaveGroupChat(chatId: string, userId: string): Promise<void | never>;
 }

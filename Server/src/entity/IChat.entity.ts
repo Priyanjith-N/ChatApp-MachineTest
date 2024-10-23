@@ -6,6 +6,7 @@ export interface IChat {
     _id: string;
     chatId: string;
     participants: string[]; // User IDs
+    pastParticipants: string[]; // User IDs of user who left or leave chat
     type: "one-to-one" | "group";
     groupName?: string;
     groupProfilePicture?: {
