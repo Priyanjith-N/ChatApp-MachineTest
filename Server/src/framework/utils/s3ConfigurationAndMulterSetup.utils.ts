@@ -23,8 +23,8 @@ const upload = multer({
         },
     }),
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'video/mp4', 'audio/mpeg'];
-        if (allowedTypes.includes(file.mimetype)) {
+        const allowedTypes: Set<string> = new Set(["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml", "video/mp4", "video/avi", "video/mov", "video/x-matroska", "video/x-flv", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/aac", "audio/flac", "audio/x-ms-wma", "audio/x-aiff", "audio/midi", "audio/x-midi", "audio/webm"]);
+        if (allowedTypes.has(file.mimetype)) {
           cb(null, true); // accepet file
         } else {
             cb(null, false);

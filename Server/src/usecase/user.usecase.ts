@@ -132,13 +132,11 @@ export default class UserUseCase implements IUserUseCase {
 
             if(!chatId || !isObjectIdOrHexString(chatId)) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
 
-            if((!content && !file) || !type || ((type !== "text") && (type !== "image") && (type !== "video") && (type !== "document"))) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_MESSAGE, type: ErrorField.MESSAGE });
+            if((!content && !file) || !type || ((type !== "text") && (type !== "image") && (type !== "video") && (type !== "document") && (type !== "audio"))) throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_MESSAGE, type: ErrorField.MESSAGE });
 
             const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, senderId);
             
             if(!chat) throw new ChatError({ statusCode: StatusCodes.NotFound, message: ErrorMessage.CHAT_NOT_FOUND, type: ErrorField.CHAT });
-            
-            const reciverId: string = chat.participants.find((userId) => userId.toString() !== senderId)!;
 
             let isRead: boolean = true;
 
@@ -194,8 +192,6 @@ export default class UserUseCase implements IUserUseCase {
 
             return createdMessage;
         } catch (err: any) {
-            console.log(err);
-            
             throw err;
         }
     }
