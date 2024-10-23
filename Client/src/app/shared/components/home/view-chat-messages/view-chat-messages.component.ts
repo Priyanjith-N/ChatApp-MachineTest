@@ -2,7 +2,6 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, inject, OnDestr
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 // services
 import { SocketIoService } from '../../../../core/services/socket-io.service';
@@ -46,7 +45,9 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
   private currentUserProfile: IUserProfile | null = null;
-  private sanitizer: DomSanitizer = inject(DomSanitizer);
+  private mediaRecorder: MediaRecorder | null = null;
+  private stream!: MediaStream;
+  private audioChunks: Blob[] = [];
 
   @ViewChild("chatMessageInput")
   private chatMessageInput!: ElementRef<HTMLInputElement>;
@@ -132,10 +133,6 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     if(this.roomId) {
       this.socketIoService.emit<string>(ChatEventEnum.LEAVE_CHAT_EVENT, this.roomId);
     }
-  }
-
-  getSafeUrl(url: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   ngOnInit(): void {
@@ -282,7 +279,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   sendMessage() {
     let { content } = this.chatForm.value;
-    let type: "text" | "image" | "video" | "document" | "audio" = "text"
+    let type: "text" | "image" | "video" | "document" | "audio" | "voiceRecord" = "text"
 
     if(!content && !this.selectedFile) return;
 
@@ -293,7 +290,8 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
         "image": new Set<string>(["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml"]),
         "video": new Set<string>(["video/mp4", "video/avi", "video/mov", "video/x-matroska", "video/x-flv"]),
         "document": new Set<string>(["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"]),
-        "audio": new Set<string>(["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/aac", "audio/flac", "audio/x-ms-wma", "audio/x-aiff", "audio/midi", "audio/x-midi", "audio/webm"])
+        "audio": new Set<string>(["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/aac", "audio/flac", "audio/x-ms-wma", "audio/x-aiff", "audio/midi", "audio/x-midi"]),
+        "voiceRecord": new Set<string>(["audio/webm"])
       };
 
       // Extract the file extension from the file name
@@ -301,7 +299,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
       for(const key in fileTypeMap) {
         if(fileTypeMap[key].has(mimeType)) {
-          type = key as "text" | "image" | "video" | "document" | "audio";
+          type = key as "text" | "image" | "video" | "document" | "audio" | "voiceRecord";
           break;
         }
       }
@@ -315,6 +313,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       next: (res) => {
         this.chatForm.reset();
         this.selectedFile = undefined;
+        this.audioChunks = [];
         if(this.fileUpload) {
           this.fileUpload.nativeElement.value = "";
         }
@@ -332,5 +331,37 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       },
       error: (err) => {  }
     });
+  }
+
+  async startRecording(): Promise<void> {
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.mediaRecorder = new MediaRecorder(this.stream);
+    this.audioChunks = [];
+
+    this.mediaRecorder.ondataavailable = (event) => {
+      this.audioChunks.push(event.data);
+    };
+
+    this.mediaRecorder.start();
+  }
+
+  async stopRecording(): Promise<void> {
+    const audioFile: Promise<File> = new Promise((resolve) => {
+      if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+        this.mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+          const audioFile = new File([audioBlob], 'recording.webm', { type: 'audio/webm' });
+          this.stream.getTracks().forEach((track) => track.stop());
+          resolve(audioFile);
+        };
+        
+        this.mediaRecorder.stop();
+      }
+    });
+    this.mediaRecorder = null;
+
+    this.selectedFile = await audioFile;
+
+    this.sendMessage();
   }
 }

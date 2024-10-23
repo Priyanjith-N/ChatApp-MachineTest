@@ -58,6 +58,12 @@
                                             <source [src]="message.file.url" type="audio/mpeg" />
                                         </audio>
                                     </div>
+                                }@else if((message.type === "voiceRecord") && message.file){
+                                    <div class="my-2">
+                                        <audio controls>
+                                            <source [src]="message.file.url" type="audio/webm" />
+                                        </audio>
+                                    </div>
                                 }@else if((message.type === "document") && message.file) {
                                     <div class="my-1">
                                         <div class="max-w-lg rounded-lg bg-[#494949] text-gray-100">
@@ -128,6 +134,12 @@
                                             <source [src]="message.file.url" type="audio/mpeg" />
                                         </audio>
                                     </div>
+                                }@else if((message.type === "voiceRecord") && message.file){
+                                    <div class="my-2">
+                                        <audio controls>
+                                            <source [src]="message.file.url" type="audio/webm" />
+                                        </audio>
+                                    </div>
                                 }@else if((message.type === "document") && message.file) {
                                     <div class="my-1">
                                         <div class="md:w-full lg:w-[250px] rounded-lg bg-[#494949] text-gray-100">
@@ -192,7 +204,7 @@
                     </button>
                 }@else {
                     <button>
-                        <div class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
+                        <div (mousedown)="startRecording()" (mouseup)="stopRecording()" (mouseleave)="stopRecording()" class="px-2.5 py-2 rounded-[5.07px] transition-all duration-300 ease-in-out hover:bg-[#3A3A3A] relative">
                             <img class="w-[20px] h-auto" src="/icons/voiceRecorderIcon.png" alt="">
                         </div> 
                     </button>

@@ -139,6 +139,10 @@ export class ChatComponent implements AfterViewInit, OnInit {
     });
   }
 
+  getDoumentName(url: string) {
+    return decodeURIComponent(url.split("/").pop()!.split("-")!.pop()!)
+  }
+
   getReciverProfileData(chat: IChatWithParticipantDetails) {
     return chat.participantsData.find((userData) => (this.currentUserProfile && (userData._id !== this.currentUserProfile._id)));
   }

@@ -42,7 +42,7 @@ export class ChatService {
     return getMessagesOfChatAPIResponse$;
   }
 
-  sendMessage(content: string, muiltiMediaFiles: File | undefined, type: "text" | "image" | "video" | "document" | "audio", chatId: string): Observable<ISendMessageSuccessfullAPIResponse> {
+  sendMessage(content: string, muiltiMediaFiles: File | undefined, type: "text" | "image" | "video" | "document" | "audio" | "voiceRecord", chatId: string): Observable<ISendMessageSuccessfullAPIResponse> {
    const api: string = `${this.backendDomain}${UserAPIEndPoint.SEND_MESSAGE}${chatId}`;
 
    const body: FormData = new FormData();
