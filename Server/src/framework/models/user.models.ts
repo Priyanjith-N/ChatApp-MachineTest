@@ -37,12 +37,6 @@ const userSchema: Schema = new Schema<IUser>({
         type: String,
         default: "Hey there! I am using Chat App.",
         required: true
-    },
-    status: {
-        type: String,
-        default: "offline",
-        enum: ["online", "offline"],
-        required: true
     }
 });
 

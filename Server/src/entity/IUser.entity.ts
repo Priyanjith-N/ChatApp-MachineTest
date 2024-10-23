@@ -10,7 +10,6 @@ export default interface IUser {
         url: string
     };
     about: string;
-    status: "online" | "offline";
 }
 
 export interface IUserLoginCredentials {
