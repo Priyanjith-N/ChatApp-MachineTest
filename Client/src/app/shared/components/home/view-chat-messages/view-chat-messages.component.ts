@@ -216,15 +216,26 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     return this.chat?.participantsData.find((userProfile) => userProfile._id === userId)!;
   }
 
-  generateColorFromString(input: string): string {
+  generateLightColorFromString(input: string): string {
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
       hash = input.charCodeAt(i) + ((hash << 5) - hash);
     }
   
-    const color = `#${(hash & 0x00FFFFFF).toString(16).padStart(6, '0')}`;
-    return color;
+    // Extract RGB values from hash and increase brightness
+    const r = (hash >> 16) & 0xFF;
+    const g = (hash >> 8) & 0xFF;
+    const b = hash & 0xFF;
+  
+    // Adjust to keep colors light (add an offset to each component)
+    const lightR = Math.floor((r + 255) / 2); // Brighter Red
+    const lightG = Math.floor((g + 255) / 2); // Brighter Green
+    const lightB = Math.floor((b + 255) / 2); // Brighter Blue
+  
+    // Convert back to hex and return the color
+    return `#${((1 << 24) + (lightR << 16) + (lightG << 8) + lightB).toString(16).slice(1)}`;
   }
+  
 
   isMessagedByCurrentUser(message: IMessageWithSenderDetails) {
     if(!this.currentUserProfile) {

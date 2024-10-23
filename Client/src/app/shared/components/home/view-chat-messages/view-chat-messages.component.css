@@ -20,15 +20,16 @@
 .bubble {
     position: relative;
     border-radius: 5.07px;
-    border-top-right-radius: 0;
 }
 
 .bubbleRecive {
     background-color: #353535;
+    border-top-left-radius: 0;
 }
 
 .bubbleSend {
     background-color: #005C4B;
+    border-top-right-radius: 0;
 }
 
 .bubbleSend::after {

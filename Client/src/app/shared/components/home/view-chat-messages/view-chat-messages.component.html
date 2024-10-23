@@ -71,12 +71,12 @@
                             }
                             <div class="bubble bubbleRecive p-1.5 min-w-[10%] w-fit max-w-[40%] h-auto">
                                 @if(chat?.type === "group") {
-                                    <p class="font-semibold text-[12px] leading-normal cursor-pointer hover:underline" [ngStyle]="{ color: generateColorFromString(message.senderId) }" >{{ getReciverProfileData(message.senderId).displayName }}</p>
+                                    <p class="font-semibold text-[12px] leading-normal cursor-pointer hover:underline" [ngStyle]="{ color: generateLightColorFromString(message.senderId) }" >{{ getReciverProfileData(message.senderId).displayName }}</p>
                                 }
                                 @if(message.type === "text") {
                                     <p class="break-words">{{ message.content }}</p>
                                 }@else if(message.file) {
-                                    <div class="mb-2">
+                                    <div class="my-2">
                                         <img class="h-auto object-scale-down md:w-full lg:w-[250px]" [src]="message.file.url" alt="">
                                     </div>
                                 }
