@@ -42,9 +42,19 @@
                             <div class="bubble bubbleSend p-1.5 min-w-[10%] w-fit max-w-[30%] h-auto">
                                 @if(message.type === "text") {
                                     <p class="break-words">{{ message.content }}</p>
-                                }@else if(message.file) {
-                                    <div class="mb-2">
+                                }@else if((message.type === "image") && message.file) {
+                                    <div class="my-2">
                                         <img class="h-auto object-scale-down md:w-full lg:w-[250px]" [src]="message.file.url" alt="">
+                                    </div>
+                                }@else if((message.type === "video") && message.file) {
+                                    <div class="my-2">
+                                        
+                                    </div>
+                                }@else if((message.type === "document") && message.file) {
+                                    <div class="my-2">
+                                        <video controls width="300">
+                                            <source [src]="message.file.url" type="video/mp4" />
+                                        </video>
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
@@ -75,9 +85,19 @@
                                 }
                                 @if(message.type === "text") {
                                     <p class="break-words">{{ message.content }}</p>
-                                }@else if(message.file) {
+                                }@else if((message.type === "image") && message.file) {
                                     <div class="my-2">
                                         <img class="h-auto object-scale-down md:w-full lg:w-[250px]" [src]="message.file.url" alt="">
+                                    </div>
+                                }@else if((message.type === "video") && message.file) {
+                                    <div class="my-2">
+                                        <video controls width="300">
+                                            <source [src]="message.file.url" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                }@else if((message.type === "document") && message.file) {
+                                    <div class="my-2">
+                                        
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
