@@ -158,11 +158,18 @@
                                                     <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/norReadMessage.png" alt="tick">
                                                 }
                                             </div>
-                                            <div class="max-w-[200px] overflow-hidden">
+                                            <div class="flex items-center gap-1.5 overflow-hidden">
                                                 @if(chat.lastMessageData.type === "text") {
-                                                    <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.content }}</p>
-                                                }@else {
-                                                    <p class="text-[#CFCFCF] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.type }}</p>
+                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.content }}</p>
+                                                }@else if(chat.lastMessageData.type === "image") {
+                                                    <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/imageIcon.png" alt="imageIcon">
+                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">Photo</p>
+                                                }@else if(chat.lastMessageData.type === "video") {
+                                                    <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/videoIcon.png" alt="videoIcon">
+                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">Video</p>
+                                                }@else if(chat.lastMessageData.type === "document") {
+                                                    <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/documentIcon.png" alt="documentIcon">
+                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.type }}</p>
                                                 }
                                             </div>
                                         </div>
