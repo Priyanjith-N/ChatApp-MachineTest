@@ -148,4 +148,17 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async getAllUsersNotPresentInCurrentGroupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const data = await this.userUseCase.getAllUsersNotPresentInCurrentGroupChat(req.params.chatId, req.id);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL,
+                data
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }

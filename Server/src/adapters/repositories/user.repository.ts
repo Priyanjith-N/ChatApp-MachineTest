@@ -408,4 +408,12 @@ export default class UserRepository implements IUserRepositroy {
             throw err;
         }
     }
+
+    async getAllUsersNotPresentInGivenChat(participants: string[]): Promise<IUserProfile[] | never> {
+        try {
+            return await Users.find({ _id: { $nin: participants } }, { password: 0 });
+        } catch (err: any) {
+            throw err;
+        }
+    } 
 }

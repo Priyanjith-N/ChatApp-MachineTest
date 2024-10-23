@@ -12,4 +12,5 @@ export default interface IUserController {
     sendMessage(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     createNewGrooupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     leaveGroupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    getAllUsersNotPresentInCurrentGroupChat(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 }

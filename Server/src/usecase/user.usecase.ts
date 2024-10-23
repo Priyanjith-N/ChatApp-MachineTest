@@ -239,4 +239,18 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async getAllUsersNotPresentInCurrentGroupChat(chatId: string | undefined, userId: string | undefined): Promise<IUserProfile[] | never> {
+        try {
+            if(!userId || !isObjectIdOrHexString(userId) || !chatId || !isObjectIdOrHexString(chatId)) throw new RequiredCredentialsNotGiven(ErrorMessage.REQUIRED_CREDENTIALS_NOT_GIVEN);
+
+            const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, userId);
+
+            if(!chat || chat.type !== "group") throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
+
+            return await this.userRepository.getAllUsersNotPresentInGivenChat(chat.participants);
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

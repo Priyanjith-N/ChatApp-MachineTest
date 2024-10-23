@@ -13,4 +13,5 @@ export default interface IUserUseCase {
     sendMessage(chatId: string | undefined, senderId: string | undefined, content: string | undefined, type: string | undefined, file: Express.MulterS3.File | undefined): Promise<IMessageWithSenderDetails | never>;
     createNewGroupChat(groupName: string | undefined, participants: string[] | undefined, groupAdmin: string | undefined): Promise<IChatWithParticipantDetails | never>;
     leaveGroupChat(userId: string | undefined, chatId: string | undefined): Promise<void | never>;
+    getAllUsersNotPresentInCurrentGroupChat(chatId: string | undefined, userId: string | undefined): Promise<IUserProfile[] | never>;
 }

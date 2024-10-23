@@ -49,4 +49,6 @@ router.post("/createnewgroupchat", userController.createNewGrooupChat.bind(userC
 
 router.patch("/leavegroupchat/:chatId", userController.leaveGroupChat.bind(userController));
 
+router.get("/allusersnotincurrentgroup/:chatId", userController.getAllUsersNotPresentInCurrentGroupChat.bind(userController));
+
 export default router;
