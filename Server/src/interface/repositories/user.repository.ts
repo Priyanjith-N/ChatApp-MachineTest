@@ -20,4 +20,5 @@ export default interface IUserRepositroy {
     createNewGroupChat(groupName: string, participants: string[], groupAdmin: string): Promise<IChat | never>;
     leaveGroupChat(chatId: string, userId: string): Promise<void | never>;
     getAllUsersNotPresentInGivenChat(participants: string[]): Promise<IUserProfile[] | never>;
+    addNewMembersInGroup(chatId: string, newMembers: string[]): Promise<void | never>;
 }

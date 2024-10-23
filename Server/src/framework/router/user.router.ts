@@ -51,4 +51,6 @@ router.patch("/leavegroupchat/:chatId", userController.leaveGroupChat.bind(userC
 
 router.get("/allusersnotincurrentgroup/:chatId", userController.getAllUsersNotPresentInCurrentGroupChat.bind(userController));
 
+router.patch("/addnewmembersingroup/:chatId", userController.addNewMembersInGroup.bind(userController));
+
 export default router;

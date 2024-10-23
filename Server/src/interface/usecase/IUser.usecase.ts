@@ -14,4 +14,5 @@ export default interface IUserUseCase {
     createNewGroupChat(groupName: string | undefined, participants: string[] | undefined, groupAdmin: string | undefined): Promise<IChatWithParticipantDetails | never>;
     leaveGroupChat(userId: string | undefined, chatId: string | undefined): Promise<void | never>;
     getAllUsersNotPresentInCurrentGroupChat(chatId: string | undefined, userId: string | undefined): Promise<IUserProfile[] | never>;
+    addNewMembersInGroup(chatId: string | undefined, userId: string | undefined, newMembers: string[] | undefined): Promise<void>;
 }

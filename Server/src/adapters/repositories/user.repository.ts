@@ -416,4 +416,14 @@ export default class UserRepository implements IUserRepositroy {
             throw err;
         }
     } 
+
+    async addNewMembersInGroup(chatId: string, newMembers: string[]): Promise<void | never> {
+        try {
+            await Chats.updateMany({ chatId }, { $addToSet: { participants: { $each: newMembers } }, $pull: { pastParticipants: { $in: newMembers } } }); // need to add newMembers to the participants list and as well as if they were removed before form group need to remove their id form there
+
+            await Messages.updateMany({ chatId }, { $addToSet: { messageReadedParticipants: { $each: newMembers } } }); // mark all messages before adding newMembers as read by new members so notification won't come
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

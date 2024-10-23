@@ -253,4 +253,28 @@ export default class UserUseCase implements IUserUseCase {
             throw err;
         }
     }
+
+    async addNewMembersInGroup(chatId: string | undefined, userId: string | undefined, newMembers: string[] | undefined): Promise<void> {
+        try {
+            if(!userId || !isObjectIdOrHexString(userId) || !chatId || !isObjectIdOrHexString(chatId) || !newMembers || !newMembers.length) throw new RequiredCredentialsNotGiven(ErrorMessage.REQUIRED_CREDENTIALS_NOT_GIVEN);
+
+            const chat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, userId);
+
+            if(!chat || chat.type !== "group") throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
+
+            await this.userRepository.addNewMembersInGroup(chat.chatId, newMembers);
+
+            const newUpdatedChat: IChatWithParticipantDetails = await this.userRepository.getChatByChatIdAndUserId(chatId, userId);
+
+            newMembers.forEach((newUserId) => {
+                emitSocketEvent<IChatWithParticipantDetails>(newUserId, ChatEventEnum.NEW_CHAT_EVENT, newUpdatedChat);
+            });
+
+            chat.participants.forEach((firstUserId) => {
+                emitSocketEvent<IChatWithParticipantDetails>(firstUserId.toString(), ChatEventEnum.NEW_MEMBER_ADDED_EVENT, newUpdatedChat);
+            });
+        } catch (err: any) {
+            throw err;
+        }
+    }
 }

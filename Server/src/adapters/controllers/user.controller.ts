@@ -161,4 +161,16 @@ export default class UserController implements IUserController {
             next(err);
         }
     }
+
+    async addNewMembersInGroup(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+        try {
+            await this.userUseCase.addNewMembersInGroup(req.params.chatId, req.id, req.body.newMembers);
+
+            res.status(StatusCodes.Success).json({
+                message: ResponseMessage.SUCESSFULL
+            });
+        } catch (err: any) {
+            next(err);
+        }
+    }
 }
