@@ -150,7 +150,7 @@
                                 </div>
                                 @if(chat.lastMessage) {
                                     <div class="flex justify-between items-center">
-                                        <div class="flex items-center gap-1.5">
+                                        <div class="flex justify-start items-center gap-1.5">
                                             <div>
                                                 @if(chat.lastMessageData.isRead && (currentUserProfile?._id === chat.lastMessageData.senderId)) {
                                                     <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/readMeassage.png" alt="tick">

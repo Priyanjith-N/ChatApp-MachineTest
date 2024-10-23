@@ -261,6 +261,25 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
+  getDoumentName(url: string) {
+    return decodeURIComponent(url.split("/").pop()!.split("-")!.pop()!)
+  }
+
+  saveAsPdf(url: string) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = this.getDoumentName(url); // Provide a default file name
+    
+    // Append to the body, click and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  openPdf(documentUrl: string) {
+    window.open(documentUrl, '_blank');
+  }
+
   sendMessage() {
     let { content } = this.chatForm.value;
     let type: "text" | "image" | "video" | "document" | "audio" = "text"
