@@ -47,6 +47,6 @@ router.post("/sendmessage/:chatId", upload.single("muiltiMediaFiles"), userContr
 
 router.post("/createnewgroupchat", userController.createNewGrooupChat.bind(userController));
 
-router.patch("/leavegroupchat/:chatId")
+router.patch("/leavegroupchat/:chatId", userController.leaveGroupChat.bind(userController));
 
 export default router;

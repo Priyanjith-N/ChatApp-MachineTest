@@ -8,7 +8,7 @@ import { IMessage, IMessageCredentials, IMessagesAndChatData, IMessagesGroupedBy
 
 // errrors
 import RequiredCredentialsNotGiven from "../errors/requiredCredentialsNotGiven.error";
-import { IChat, IChatWithParticipantDetails, JoinChatMessageRead } from "../entity/IChat.entity";
+import { IChat, IChatWithParticipantDetails, ILeaveGroup, JoinChatMessageRead } from "../entity/IChat.entity";
 import ChatError from "../errors/chatError.error";
 
 // socket
@@ -227,6 +227,14 @@ export default class UserUseCase implements IUserUseCase {
             if(!chat || chat.type !== "group") throw new ChatError({ statusCode: StatusCodes.BadRequest, message: ErrorMessage.INVALID_CHAT, type: ErrorField.CHAT });
 
             await this.userRepository.leaveGroupChat(chat.chatId, userId); // make user leave the chat
+
+            emitSocketEvent<string>(userId, ChatEventEnum.DELETE_LEAVED_GROUP_EVENT, chat.chatId); // delete that group for the current user's ui
+
+            chat.participants.forEach((participantId) => {
+                if(participantId.toString() !== userId) {
+                    emitSocketEvent<ILeaveGroup>(participantId.toString(), ChatEventEnum.USER_LEFT_THE_GROUP_EVENT, { chatId: chat.chatId, leavedUserId: userId });
+                }
+            })
         } catch (err: any) {
             throw err;
         }

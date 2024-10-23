@@ -72,8 +72,17 @@ export default class UserRepository implements IUserRepositroy {
                 }
             },
             {
+                $lookup: {
+                  from: 'users', 
+                  localField: 'pastParticipants', 
+                  foreignField: '_id', 
+                  as: 'pastParticipantsData'
+                }
+            },
+            {
                 $project: {
-                    "participantsData.password": 0
+                    "participantsData.password": 0,
+                    "pastParticipantsData.password": 0
                 }
             },
             {

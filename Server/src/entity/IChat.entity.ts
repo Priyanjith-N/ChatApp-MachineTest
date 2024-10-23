@@ -28,3 +28,8 @@ export interface JoinChatMessageRead {
     updatedChat: IChatWithParticipantDetails;
     messageReadedUserId: string;
 }
+
+export interface ILeaveGroup {
+    chatId: string;
+    leavedUserId: string;
+}
