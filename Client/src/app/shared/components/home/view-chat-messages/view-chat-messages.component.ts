@@ -10,7 +10,7 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 
 // interfaces
 import { IMessagesGroupedByDate, IMessageWithSenderDetails } from '../../../models/message.entity';
-import { IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
+import { IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails, ILeaveGroup, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { IUserProfile } from '../../../models/user.entity';
 
@@ -71,6 +71,13 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   private emojiPicker: Picker;
   showEmojiPicker: boolean = false;
+  newMemberAddModal: boolean = false;
+  groupMembers: string[] = [];
+  private listOfUsersData: IUserProfile[] = [];
+  displayListOfUsers: IUserProfile[] = [];
+
+  @ViewChild("searchUserInput", { static: false })
+  private searchUserInput!: ElementRef<HTMLInputElement>;
   
   
   private roomId: string = "";
@@ -89,12 +96,62 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     });
   }
 
+  openOrCloseNewMemberAddModal() {
+    this.showMemberList = false;
+    this.newMemberAddModal = !this.newMemberAddModal;
+
+    if(this.newMemberAddModal) {
+      setTimeout(() => {
+        if (this.searchUserInput) {
+          this.searchUserInput.nativeElement.focus();
+        }
+      });
+    }
+
+    if(!this.listOfUsersData.length && this.chat) {
+      const getAllUsersNotPresentInCurrentChatAPIResponse$: Observable<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse> = this.chatService.getAllUsersNotPresentInCurrentChat(this.chat.chatId);
+
+      getAllUsersNotPresentInCurrentChatAPIResponse$.subscribe({
+        next: (res) => {
+          this.listOfUsersData = res.data;
+          this.displayListOfUsers = this.listOfUsersData;
+        },
+        error: (err) => { }
+      });
+    }
+  }
+
+  searchToStartOrCreateNewGroupChatOrChat(event: Event) {
+    const inputElement: HTMLInputElement = event.target as HTMLInputElement;
+
+    const searchText: string = inputElement.value.toString();
+
+    this.displayListOfUsers = this.listOfUsersData.filter((user) => (user.displayName.toLowerCase().startsWith(searchText) || user.phoneNumber.toLowerCase().startsWith(searchText)));
+  }
+
+  isInNewGroup(userId: string) {
+    if(this.groupMembers.find((_id) => _id === userId)) return true;
+    return false;
+  }
+
+  addToGroupMember(userId: string) {
+    if(this.isInNewGroup(userId)) {
+      this.groupMembers = this.groupMembers.filter((_id) => _id !== userId); // remove added user
+    }else{
+      this.groupMembers.push(userId); // addes new member
+    }
+  }
+
   ngAfterViewChecked(): void {
     this.scrollToBottom();
   }
 
   showOrCloseMemberList() {
     if(!this.chat || !this.currentUserProfile) return;
+
+    if(!this.showMemberList && this.newMemberAddModal) {
+      this.newMemberAddModal = false;
+    }
 
     if(this.currentUserProfile._id === this.chat.participantsData[0]._id) {
       this.showMemberList = !this.showMemberList;

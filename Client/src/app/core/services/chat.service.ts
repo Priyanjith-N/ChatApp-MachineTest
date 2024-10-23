@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; // acessing environment variables
 
 // interfaces
-import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
+import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
@@ -74,5 +74,13 @@ export class ChatService {
     const leaveGroupChatAPIResponse$: Observable<ILeaveGroupChatSuccessfullAPIResponse> = this.httpClient.patch<ILeaveGroupChatSuccessfullAPIResponse>(api, { chatId });
 
     return leaveGroupChatAPIResponse$;
+  }
+
+  getAllUsersNotPresentInCurrentChat(chatId: string): Observable<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.GET_ALL_USERS_NOT_PRESENT_IN_CURRENT_GROUP}${chatId}`;
+
+    const getAllUsersNotPresentInCurrentChatAPIResponse$: Observable<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse> = this.httpClient.get<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse>(api);
+
+    return getAllUsersNotPresentInCurrentChatAPIResponse$;
   }
 }

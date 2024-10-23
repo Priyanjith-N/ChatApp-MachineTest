@@ -1,6 +1,7 @@
 // interfaces
 import { IChatWithParticipantDetails, IMessagesAndChatData } from "./IChat.entity";
 import { IMessageWithSenderDetails } from "./message.entity";
+import { IUserProfile } from "./user.entity";
 
 export interface ICreateNewChatSuccessfullAPIResponse {
     message: string;
@@ -29,4 +30,9 @@ export interface ICreateNewGroupSuccessfullAPIResponse {
 
 export interface ILeaveGroupChatSuccessfullAPIResponse {
     message: string;
+}
+
+export interface IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse {
+    message: string;
+    data: IUserProfile[];
 }
