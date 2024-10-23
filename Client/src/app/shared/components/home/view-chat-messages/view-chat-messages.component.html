@@ -130,7 +130,7 @@
                                     </div>
                                 }@else if((message.type === "document") && message.file) {
                                     <div class="my-1">
-                                        <div class="max-w-lg rounded-lg bg-[#494949] text-gray-100">
+                                        <div class="md:w-full lg:w-[250px] rounded-lg bg-[#494949] text-gray-100">
                                             <div class=" rounded-lg p-3">
                                               <div class="flex items-center gap-3">
                                                 <div>
@@ -138,7 +138,7 @@
                                                 </div>
                                                 <div class="flex-1">
                                                   <div class="text-sm text-ellipsis">{{ getDoumentName(message.file.url) }}</div>
-                                                  <div class="text-xs text-gray-400">112 KB, Microsoft Edge PDF Document</div>
+                                                  <div class="text-xs text-gray-400">{{ getDoumentName(message.file.url).split(".").pop()?.toUpperCase() }} Document</div>
                                                 </div>
                                               </div>
                                       
