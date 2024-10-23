@@ -147,6 +147,18 @@ export class ChatComponent implements AfterViewInit, OnInit {
     });
   }
 
+  getMessagedUserDisplayName(chat: IChatWithParticipantDetails, senderId: string) {
+    if(!this.currentUserProfile || chat.type !== "group") return "";
+
+    if(this.currentUserProfile._id === senderId) return "You: "
+
+    const userProfile = chat.participantsData.find((userProfile) => userProfile._id === senderId);
+
+    if(userProfile) return `${userProfile.displayName}: `;
+
+    return `${chat.participantsData.find((userProfile) => userProfile._id === senderId)!}: `;
+  }
+
   getDoumentName(url: string) {
     return decodeURIComponent(url.split("/").pop()!.split("-")!.pop()!)
   }

@@ -160,7 +160,7 @@
                                             </div>
                                             <div class="flex items-center gap-1.5 overflow-hidden">
                                                 @if(chat.lastMessageData.type === "text") {
-                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">{{ chat.lastMessageData.content }}</p>
+                                                    <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">{{ getMessagedUserDisplayName(chat, chat.lastMessageData.senderId) }}{{ chat.lastMessageData.content }}</p>
                                                 }@else if(chat.lastMessageData.type === "image") {
                                                     <img class="w-[18px] h-auto transition-transform duration-300 ease-in-out scale-100 animate-scale animate-fadeIn" src="/icons/imageIcon.png" alt="imageIcon">
                                                     <p class="text-[#CFCFCF] max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">Photo</p>
