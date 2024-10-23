@@ -23,6 +23,7 @@ import { FormateTimePipe } from '../../../pipes/formate-time.pipe';
 import { DateFormaterForChatPipe } from '../../../pipes/date-formater-for-chat.pipe';
 
 import { Database, Picker } from 'emoji-picker-element';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-view-chat-messages',
@@ -31,7 +32,8 @@ import { Database, Picker } from 'emoji-picker-element';
     GetReciverProfileDataPipe,
     FormateTimePipe,
     DateFormaterForChatPipe,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   templateUrl: './view-chat-messages.component.html',
   styleUrl: './view-chat-messages.component.css'
@@ -208,6 +210,20 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   private joinChat() {
     this.socketIoService.emit<string>(ChatEventEnum.JOIN_CHAT_EVENT, this.roomId);
+  }
+
+  getReciverProfileData(userId: string) {
+    return this.chat?.participantsData.find((userProfile) => userProfile._id === userId)!;
+  }
+
+  generateColorFromString(input: string): string {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+      hash = input.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    const color = `#${(hash & 0x00FFFFFF).toString(16).padStart(6, '0')}`;
+    return color;
   }
 
   isMessagedByCurrentUser(message: IMessageWithSenderDetails) {
