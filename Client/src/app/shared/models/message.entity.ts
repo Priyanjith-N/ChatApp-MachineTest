@@ -9,7 +9,7 @@ export interface IMessage {
         key: string,
         url: string
     };
-    type: "text" | "image" | "video" | "document";
+    type: "text" | "image" | "video" | "document" | "audio";
     messageReadedParticipants: string[];
     isRead: boolean;
     createdAt: Date;

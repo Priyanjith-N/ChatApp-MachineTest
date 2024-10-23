@@ -48,13 +48,19 @@
                                     </div>
                                 }@else if((message.type === "video") && message.file) {
                                     <div class="my-2">
-                                        
-                                    </div>
-                                }@else if((message.type === "document") && message.file) {
-                                    <div class="my-2">
                                         <video controls width="300">
                                             <source [src]="message.file.url" type="video/mp4" />
                                         </video>
+                                    </div>
+                                }@else if((message.type === "audio") && message.file){
+                                    <div class="my-2">
+                                        <audio controls>
+                                            <source [src]="message.file.url" type="audio/mpeg" />
+                                        </audio>
+                                    </div>
+                                }@else if((message.type === "document") && message.file) {
+                                    <div class="my-2">
+                                        <iframe [src]="getSafeUrl(message.file.url)" width="100%" height="500px"></iframe>
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">
@@ -95,9 +101,15 @@
                                             <source [src]="message.file.url" type="video/mp4" />
                                         </video>
                                     </div>
+                                }@else if((message.type === "audio") && message.file){
+                                    <div class="my-2">
+                                        <audio controls>
+                                            <source [src]="message.file.url" type="audio/mpeg" />
+                                        </audio>
+                                    </div>
                                 }@else if((message.type === "document") && message.file) {
                                     <div class="my-2">
-                                        
+                                        <iframe [src]="getSafeUrl(message.file.url)" width="100%" height="500px"></iframe>
                                     </div>
                                 }
                                 <div class="flex justify-end items-center gap-1.5">

@@ -2,6 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, ElementRef, inject, OnDestr
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 // services
 import { SocketIoService } from '../../../../core/services/socket-io.service';
@@ -45,6 +46,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
   private currentUserProfile: IUserProfile | null = null;
+  private sanitizer: DomSanitizer = inject(DomSanitizer);
 
   @ViewChild("chatMessageInput")
   private chatMessageInput!: ElementRef<HTMLInputElement>;
@@ -130,6 +132,10 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     if(this.roomId) {
       this.socketIoService.emit<string>(ChatEventEnum.LEAVE_CHAT_EVENT, this.roomId);
     }
+  }
+
+  getSafeUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   ngOnInit(): void {
@@ -257,7 +263,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   sendMessage() {
     let { content } = this.chatForm.value;
-    let type: "text" | "image" | "video" | "document" = "text"
+    let type: "text" | "image" | "video" | "document" | "audio" = "text"
 
     if(!content && !this.selectedFile) return;
 
@@ -268,6 +274,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
         "image": new Set<string>(["image/png", "image/jpeg", "image/gif", "image/bmp", "image/svg+xml"]),
         "video": new Set<string>(["video/mp4", "video/avi", "video/mov", "video/x-matroska", "video/x-flv"]),
         "document": new Set<string>(["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"]),
+        "audio": new Set<string>(["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/aac", "audio/flac", "audio/x-ms-wma", "audio/x-aiff", "audio/midi", "audio/x-midi", "audio/webm"])
       };
 
       // Extract the file extension from the file name
@@ -275,9 +282,12 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
       for(const key in fileTypeMap) {
         if(fileTypeMap[key].has(mimeType)) {
-          type = key as "text" | "image" | "video" | "document";
+          type = key as "text" | "image" | "video" | "document" | "audio";
+          break;
         }
       }
+
+      if(type === "text") return; // invaild type data
     }
 
     const sendMessageAPIResponse$: Observable<ISendMessageSuccessfullAPIResponse> = this.chatService.sendMessage(content, this.selectedFile, type, this.roomId);
