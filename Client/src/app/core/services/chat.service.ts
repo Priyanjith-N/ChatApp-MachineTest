@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; // acessing environment variables
 
 // interfaces
-import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
+import { IAddNewMembersInGroupSuccessfullAPIResponse, ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse, IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../shared/models/IChatAPIResponses';
 
 // enums
 import { UserAPIEndPoint } from '../enums/userAPIEndPoint';
@@ -82,5 +82,13 @@ export class ChatService {
     const getAllUsersNotPresentInCurrentChatAPIResponse$: Observable<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse> = this.httpClient.get<IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse>(api);
 
     return getAllUsersNotPresentInCurrentChatAPIResponse$;
+  }
+
+  addNewMembersInGroup(chatId: string, newMembers: string[]): Observable<IAddNewMembersInGroupSuccessfullAPIResponse> {
+    const api: string = `${this.backendDomain}${UserAPIEndPoint.ADD_MEMBERS_IN_GROUP}${chatId}`;
+
+    const addNewMemberInGroupAPIResponse$: Observable<IAddNewMembersInGroupSuccessfullAPIResponse> = this.httpClient.patch<IAddNewMembersInGroupSuccessfullAPIResponse>(api, { newMembers });
+
+    return addNewMemberInGroupAPIResponse$;
   }
 }

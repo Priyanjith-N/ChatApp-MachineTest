@@ -36,3 +36,7 @@ export interface IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse {
     message: string;
     data: IUserProfile[];
 }
+
+export interface IAddNewMembersInGroupSuccessfullAPIResponse {
+    message: string;
+}

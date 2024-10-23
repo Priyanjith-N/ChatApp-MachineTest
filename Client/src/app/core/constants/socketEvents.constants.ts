@@ -6,5 +6,6 @@ export const ChatEventEnum = Object.freeze({
     MESSAGE_RECEIVED_EVENT: "messageReceived",
     MESSAGE_READ_EVENT: "messageRead",
     DELETE_LEAVED_GROUP_EVENT: "deleteLeavedGroup",
-    USER_LEFT_THE_GROUP_EVENT: "userLeftTheGroup"
+    USER_LEFT_THE_GROUP_EVENT: "userLeftTheGroup",
+    NEW_MEMBER_ADDED_EVENT: "newMemberAdded"
 });

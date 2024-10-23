@@ -8,5 +8,6 @@ export enum UserAPIEndPoint {
     SEND_MESSAGE = "/api/sendmessage/",
     CREATE_NEW_GROUP = "/api/createnewgroupchat",
     LEAVE_GROUP_CHAT = "/api/leavegroupchat/",
-    GET_ALL_USERS_NOT_PRESENT_IN_CURRENT_GROUP = "/api/allusersnotincurrentgroup/"
+    GET_ALL_USERS_NOT_PRESENT_IN_CURRENT_GROUP = "/api/allusersnotincurrentgroup/",
+    ADD_MEMBERS_IN_GROUP = "/api/addnewmembersingroup/"
 }

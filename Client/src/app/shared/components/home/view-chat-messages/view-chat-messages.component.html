@@ -71,8 +71,8 @@
     
                         @if(groupMembers.length) {
                             <div class="my-4 pr-1.5 flex gap-1.5">
-                                <div class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#1E9D5B] bg-[#1DAA61] text-black text-center rounded-md">Add</div>
-                                <div class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#404140] bg-[#383838] text-center rounded-md">Cancel</div>
+                                <div (click)="addNewMemberInGroup();" class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#1E9D5B] bg-[#1DAA61] text-black text-center rounded-md">Add</div>
+                                <div (click)="openOrCloseNewMemberAddModal()" class="cursor-pointer w-1/2 py-2 text-[13px] px-1 hover:bg-[#404140] bg-[#383838] text-center rounded-md">Cancel</div>
                             </div>
                         }
     

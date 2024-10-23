@@ -10,7 +10,7 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 
 // interfaces
 import { IMessagesGroupedByDate, IMessageWithSenderDetails } from '../../../models/message.entity';
-import { IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
+import { IAddNewMembersInGroupSuccessfullAPIResponse, IGetAllUsersNotPresentInCurrentGroupSuccessfullAPIResponse, IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
 import { IChatWithParticipantDetails, ILeaveGroup, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { IUserProfile } from '../../../models/user.entity';
 
@@ -100,6 +100,8 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     this.showMemberList = false;
     this.newMemberAddModal = !this.newMemberAddModal;
 
+    if(!this.newMemberAddModal) this.groupMembers = [];
+
     if(this.newMemberAddModal) {
       setTimeout(() => {
         if (this.searchUserInput) {
@@ -151,6 +153,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
     if(!this.showMemberList && this.newMemberAddModal) {
       this.newMemberAddModal = false;
+      this.groupMembers = [];
     }
 
     if(this.currentUserProfile._id === this.chat.participantsData[0]._id) {
@@ -226,7 +229,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     const timePart = date.toLocaleString('en-GB', options);
 
     return `${datePart}  ${timePart.toUpperCase()}`;
-}
+  }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe({
@@ -281,14 +284,30 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       error: (err) => {  }
     });
 
-    this.socketIoService.on<ILeaveGroup>(ChatEventEnum.LEAVE_CHAT_EVENT).subscribe({
+    this.socketIoService.on<ILeaveGroup>(ChatEventEnum.USER_LEFT_THE_GROUP_EVENT).subscribe({
       next: ({ chatId, leavedUserId }) => {
         if(this.chat?.chatId === chatId) {
           const idxInParticipant = this.chat.participants.findIndex((userId) => userId === leavedUserId);
+          const idxInParticipantData = this.chat.participantsData.findIndex((userProfile) => userProfile._id === leavedUserId);
 
-          this.chat.participants.splice(idxInParticipant, 1);
+          this.chat.pastParticipants.push(leavedUserId); // leaved user id pushed to pastParticipants
 
-          this.chat.pastParticipants.push(leavedUserId);
+          this.chat.pastParticipantsData.push(this.chat.participantsData[idxInParticipantData]); // leaved user data pushed to pastParticipant data for ui
+
+          this.chat.participants.splice(idxInParticipant, 1); // simply removing
+          this.chat.participantsData.splice(idxInParticipantData, 1); // removing to reflect in ui
+
+          this.listOfUsersData = [];
+          this.displayListOfUsers = []; // this is for again fetich if need to add that user again
+        }
+      },
+      error: (err) => {  }
+    });
+
+    this.socketIoService.on<IChatWithParticipantDetails>(ChatEventEnum.NEW_MEMBER_ADDED_EVENT).subscribe({
+      next: (updatedChat) => {
+        if(updatedChat.chatId === this.chat?.chatId) {
+          this.chat = updatedChat;
         }
       },
       error: (err) => {  }
@@ -483,6 +502,23 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
         this.openOrCloseGroupInfo();
         this.leaveRoom();
         this.router.navigate(["/chat"]);
+      },
+      error: (err) => {  }
+    });
+  }
+
+  addNewMemberInGroup() {
+    if(!this.groupMembers.length || !this.chat) return;
+
+    const addNewMemberInGroupAPIResponse$: Observable<IAddNewMembersInGroupSuccessfullAPIResponse> = this.chatService.addNewMembersInGroup(this.chat.chatId, this.groupMembers);
+
+    addNewMemberInGroupAPIResponse$.subscribe({
+      next: (res) => {
+        this.groupMembers = [];
+        this.listOfUsersData = []
+        this.displayListOfUsers = [];
+        this.openOrCloseNewMemberAddModal();
+        this.openOrCloseGroupInfo();
       },
       error: (err) => {  }
     });
