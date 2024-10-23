@@ -48,7 +48,7 @@
                                     </div>
                                 }@else if((message.type === "video") && message.file) {
                                     <div class="my-2">
-                                        <video controls width="300">
+                                        <video controls class="w-[300px] h-[300px]">
                                             <source [src]="message.file.url" type="video/mp4" />
                                         </video>
                                     </div>
@@ -118,7 +118,7 @@
                                     </div>
                                 }@else if((message.type === "video") && message.file) {
                                     <div class="my-2">
-                                        <video controls width="300">
+                                        <video class="w-[300px] h-[300px]" controls>
                                             <source [src]="message.file.url" type="video/mp4" />
                                         </video>
                                     </div>
