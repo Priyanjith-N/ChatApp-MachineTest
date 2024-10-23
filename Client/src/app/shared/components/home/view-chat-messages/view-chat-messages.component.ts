@@ -171,13 +171,15 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
     this.socketIoService.on<IMessageWithSenderDetails>(ChatEventEnum.MESSAGE_RECEIVED_EVENT).subscribe({
       next: (newMessage) => {
-        if(this.messages.length) {
-          this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
-        }else{
-          this.messages.push({
-            createdAt: newMessage.createdAt,
-            messages: [newMessage]
-          })
+        if(newMessage.chatId === this.chat?.chatId){
+          if(this.messages.length) {
+            this.messages[this.messages.length - 1].messages.push(newMessage); // push to the last messages log
+          }else{
+            this.messages.push({
+              createdAt: newMessage.createdAt,
+              messages: [newMessage]
+            })
+          }
         }
       },
       error: (err) => {  }
