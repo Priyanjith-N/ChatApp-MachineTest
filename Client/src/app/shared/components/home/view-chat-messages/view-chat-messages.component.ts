@@ -44,12 +44,13 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private socketIoService: SocketIoService = inject(SocketIoService);
   private router: Router = inject(Router);
-  private currentUserProfile: IUserProfile | null = null;
+  currentUserProfile: IUserProfile | null = null;
   private mediaRecorder: MediaRecorder | null = null;
   private stream!: MediaStream;
   private audioChunks: Blob[] = [];
 
   showGroupInfo: boolean = false;
+  showMemberList: boolean = false;
 
   @ViewChild("chatMessageInput")
   private chatMessageInput!: ElementRef<HTMLInputElement>;
@@ -90,6 +91,21 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
+  }
+
+  showOrCloseMemberList() {
+    if(!this.chat || !this.currentUserProfile) return;
+
+    if(this.currentUserProfile._id === this.chat.participantsData[0]._id) {
+      this.showMemberList = !this.showMemberList;
+      return;
+    }
+
+    const currentUserProfile = this.chat.participantsData.find((userProfile) => userProfile._id === this.currentUserProfile?._id)!;
+    const userProfilesWithoutCurrentUser = this.chat.participantsData.filter((userProfile) => userProfile._id !== this.currentUserProfile?._id);
+    this.chat.participantsData = [currentUserProfile, ...userProfilesWithoutCurrentUser]
+
+    this.showMemberList = !this.showMemberList;
   }
 
   showOrCloseEmojiPicker() {

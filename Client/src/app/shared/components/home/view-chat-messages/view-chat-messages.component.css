@@ -45,3 +45,11 @@
 .display {
     @apply block;
 }
+
+.chatSection::-webkit-scrollbar {
+    width: 3px;
+}
+
+.chatSection::-webkit-scrollbar-thumb {
+    background: #3A3A3A;
+}
