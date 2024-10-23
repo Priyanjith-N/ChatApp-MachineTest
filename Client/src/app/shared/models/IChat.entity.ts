@@ -7,6 +7,7 @@ export interface IChat {
     _id: string;
     chatId: string;
     participants: string[]; // User IDs
+    pastParticipants: string[]; // User IDs of user who left or leave chat
     type: "one-to-one" | "group";
     groupName?: string;
     groupProfilePicture?: {
@@ -20,6 +21,7 @@ export interface IChat {
 
 export interface IChatWithParticipantDetails extends IChat {
     participantsData: IUserProfile[];
+    pastParticipantsData: IUserProfile[];
     lastMessageData: IMessage;
     unReadMessages: number;
 }
@@ -32,4 +34,9 @@ export interface IMessagesAndChatData {
 export interface JoinChatMessageRead {
     updatedChat: IChatWithParticipantDetails;
     messageReadedUserId: string;
+}
+
+export interface ILeaveGroup {
+    chatId: string;
+    leavedUserId: string;
 }

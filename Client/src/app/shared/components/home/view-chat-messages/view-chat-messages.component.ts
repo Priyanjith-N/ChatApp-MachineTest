@@ -10,8 +10,8 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 
 // interfaces
 import { IMessagesGroupedByDate, IMessageWithSenderDetails } from '../../../models/message.entity';
-import { IGetMessagessOfChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
-import { IChatWithParticipantDetails, JoinChatMessageRead } from '../../../models/IChat.entity';
+import { IGetMessagessOfChatSuccessfullAPIResponse, ILeaveGroupChatSuccessfullAPIResponse, ISendMessageSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
+import { IChatWithParticipantDetails, ILeaveGroup, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { IUserProfile } from '../../../models/user.entity';
 
 // pipes
@@ -48,6 +48,8 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   private mediaRecorder: MediaRecorder | null = null;
   private stream!: MediaStream;
   private audioChunks: Blob[] = [];
+
+  showGroupInfo: boolean = false;
 
   @ViewChild("chatMessageInput")
   private chatMessageInput!: ElementRef<HTMLInputElement>;
@@ -135,6 +137,24 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
+  openOrCloseGroupInfo() {
+    if(!this.chat || this.chat.type !== "group") return;
+
+    this.showGroupInfo = !this.showGroupInfo;
+  }
+
+  formatDate(date: Date | undefined) {
+    if(!date) return;
+
+    date = new Date(date);
+
+    const options: Record<string, string | boolean> = { hour: '2-digit', minute: '2-digit', hour12: true };
+    const datePart = date.toLocaleDateString('en-GB');
+    const timePart = date.toLocaleString('en-GB', options);
+
+    return `${datePart}  ${timePart.toUpperCase()}`;
+}
+
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe({
       next: (params) => {
@@ -187,6 +207,19 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       },
       error: (err) => {  }
     });
+
+    this.socketIoService.on<ILeaveGroup>(ChatEventEnum.LEAVE_CHAT_EVENT).subscribe({
+      next: ({ chatId, leavedUserId }) => {
+        if(this.chat?.chatId === chatId) {
+          const idxInParticipant = this.chat.participants.findIndex((userId) => userId === leavedUserId);
+
+          this.chat.participants.splice(idxInParticipant, 1);
+
+          this.chat.pastParticipants.push(leavedUserId);
+        }
+      },
+      error: (err) => {  }
+    });
   }
 
   ngOnDestroy(): void {
@@ -218,7 +251,9 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   getReciverProfileData(userId: string) {
-    return this.chat?.participantsData.find((userProfile) => userProfile._id === userId)!;
+    const userProfile = this.chat?.participantsData.find((userProfile) => userProfile._id === userId);
+
+    return (userProfile || this.chat?.pastParticipantsData.find((userProfile) => userProfile._id === userId))!;
   }
 
   generateLightColorFromString(input: string): string {
@@ -363,5 +398,20 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
     this.selectedFile = await audioFile;
 
     this.sendMessage();
+  }
+
+  leaveGroupChat() {
+    if(!this.chat || (this.chat.type !== "group") || !this.showGroupInfo) return;
+
+    const leaveGroupChatAPIResponse$: Observable<ILeaveGroupChatSuccessfullAPIResponse> = this.chatService.leaveGroupChat(this.chat.chatId);
+    
+    leaveGroupChatAPIResponse$.subscribe({
+      next: (res) => {
+        this.openOrCloseGroupInfo();
+        this.leaveRoom();
+        this.router.navigate(["/chat"]);
+      },
+      error: (err) => {  }
+    });
   }
 }

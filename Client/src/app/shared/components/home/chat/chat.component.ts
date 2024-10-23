@@ -10,7 +10,7 @@ import { SocketIoService } from '../../../../core/services/socket-io.service';
 import IUser, { IUserProfile } from '../../../models/user.entity';
 import { IGetAllUserProfileSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
 import { ICreateNewChatSuccessfullAPIResponse, ICreateNewGroupSuccessfullAPIResponse, IGetAllChatsSuccessfullAPIResponse } from '../../../models/IChatAPIResponses';
-import { IChatWithParticipantDetails, JoinChatMessageRead } from '../../../models/IChat.entity';
+import { IChatWithParticipantDetails, ILeaveGroup, JoinChatMessageRead } from '../../../models/IChat.entity';
 import { ChatEventEnum } from '../../../../core/constants/socketEvents.constants';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { GetReciverProfileDataPipe } from '../../../pipes/get-reciver-profile-data.pipe';
@@ -134,6 +134,14 @@ export class ChatComponent implements AfterViewInit, OnInit {
         if((idxOfCurrentChat !== -1) && (updatedChat.participants.length === (updatedChat.lastMessageData.messageReadedParticipants.length))) {
           this.chatListsData.splice(idxOfCurrentChat, 1, updatedChat); // relplace old chat with new chat
         }
+      },
+      error: (err) => {  }
+    });
+
+    this.socketIoService.on<string>(ChatEventEnum.DELETE_LEAVED_GROUP_EVENT).subscribe({
+      next: (chatId) => {
+        this.chatListsData = this.chatListsData.filter((chat) => chat.chatId !== chatId);
+        this.displayChatLists = this.chatListsData;
       },
       error: (err) => {  }
     });

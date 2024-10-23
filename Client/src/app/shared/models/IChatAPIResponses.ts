@@ -26,3 +26,7 @@ export interface ICreateNewGroupSuccessfullAPIResponse {
     message: string;
     data: IChatWithParticipantDetails;
 }
+
+export interface ILeaveGroupChatSuccessfullAPIResponse {
+    message: string;
+}
