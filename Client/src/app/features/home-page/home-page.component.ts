@@ -32,6 +32,8 @@ export class HomePageComponent implements OnInit {
   private socketioService: SocketIoService = inject(SocketIoService);
 
   ngOnInit() {
+    this.socketioService.connect(); // checks if connected then reconnect if not connected
+
     this.socketioService.on<IJWTAuthError | Error>(ChatEventEnum.SOCKET_ERROR_EVENT).subscribe({
       next: (res) => {
         this.router.navigate(["/auth/login"]);

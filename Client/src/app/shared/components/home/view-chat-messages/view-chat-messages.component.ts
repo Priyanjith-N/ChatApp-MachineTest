@@ -75,6 +75,7 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
   groupMembers: string[] = [];
   private listOfUsersData: IUserProfile[] = [];
   displayListOfUsers: IUserProfile[] = [];
+  onlineUsersList: Set<string> = new Set<string>();
 
   @ViewChild("searchUserInput", { static: false })
   private searchUserInput!: ElementRef<HTMLInputElement>;
@@ -251,6 +252,12 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       }
     });
 
+    this.socketIoService.onlineUsersIdsObservable$.subscribe({
+      next: (onlineUsersList) => {
+        this.onlineUsersList = onlineUsersList;
+      }
+    });
+
     this.socketIoService.on<JoinChatMessageRead>(ChatEventEnum.MESSAGE_READ_EVENT).subscribe({
       next: ({ updatedChat, messageReadedUserId }) => { // this will only emited by other person when he or she is in the room or cliked your chat
         for(const dayMessage of this.messages) {
@@ -312,6 +319,14 @@ export class ViewChatMessagesComponent implements OnInit, OnDestroy, AfterViewIn
       },
       error: (err) => {  }
     });
+  }
+
+  isUserOnline() {
+    if(!this.chat || this.chat.type === "group" || !this.currentUserProfile) return false;
+
+    const reciverId: string = this.chat.participants.find((userId) => userId !== this.currentUserProfile?._id)!;
+    
+    return this.onlineUsersList.has(reciverId);
   }
 
   ngOnDestroy(): void {

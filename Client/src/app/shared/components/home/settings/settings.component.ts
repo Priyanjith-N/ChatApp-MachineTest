@@ -9,6 +9,7 @@ import { UserProfileManagementService } from '../../../../core/services/user-pro
 // interfaces
 import { ILogoutSuccessfullAPIResponse } from '../../../models/IUserAPIResponses';
 import { IUserProfile } from '../../../models/user.entity';
+import { SocketIoService } from '../../../../core/services/socket-io.service';
 
 @Component({
   selector: 'app-settings',
@@ -22,6 +23,7 @@ import { IUserProfile } from '../../../models/user.entity';
 })
 export class SettingsComponent implements OnInit {
   private userService: UserService = inject(UserService);
+  private socketIoService: SocketIoService = inject(SocketIoService);
   private userProfileManagementService: UserProfileManagementService = inject(UserProfileManagementService);
   private router: Router = inject(Router);
   private userProfileManagement: UserProfileManagementService = inject(UserProfileManagementService);
@@ -43,6 +45,8 @@ export class SettingsComponent implements OnInit {
     this.isLogginOut = true;
 
     const logoutAPIResponse$: Observable<ILogoutSuccessfullAPIResponse> = this.userService.handelLogout();
+
+    this.socketIoService.disconnect(); // disconnect
 
     logoutAPIResponse$.subscribe({
       next: (res) => {

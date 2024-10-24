@@ -53,6 +53,7 @@ export class ChatComponent implements AfterViewInit, OnInit {
   private listOfUsersData: IUserProfile[] = [];
   displayListOfUsers: IUserProfile[] = [];
   currentUserProfile: IUserProfile | null = null;
+  onlineUsersList: Set<string> = new Set<string>();
 
   groupMembers: string[] = [];
   newGroupForm: FormGroup;
@@ -109,6 +110,12 @@ export class ChatComponent implements AfterViewInit, OnInit {
     this.userProfileManagementService.userProfile$.subscribe({
       next: (userProfile) => {
         this.currentUserProfile = userProfile;
+      }
+    });
+
+    this.socketIoService.onlineUsersIdsObservable$.subscribe({
+      next: (onlineUsersList) => {
+        this.onlineUsersList = onlineUsersList;
       }
     });
 
