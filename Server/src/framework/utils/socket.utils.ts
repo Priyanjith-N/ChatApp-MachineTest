@@ -48,6 +48,7 @@ const mountJoinAndLeaveChatEvent = (socket: IAuthSocket, activeChats: Map<string
 
 export function connectSocket(httpServer: http.Server) {
     const activeChats: Map<string, Set<string>> = new Map();
+    const onlineUsers: Set<string> = new Set<string>();
 
     const io = new Server(httpServer, {
         pingTimeout: 60000,
@@ -84,12 +85,29 @@ export function connectSocket(httpServer: http.Server) {
     });
 
     io.on(ChatEventEnum.CONNECTION, async (socket: IAuthSocket) => {
+        onlineUsers.add(socket.userId!); // make the user online.
+
         socket.join(socket.userId!);
+        
+        io.emit(ChatEventEnum.ONLINE_USERS_LIST_CHANGE, Array.from(onlineUsers));
 
         mountJoinAndLeaveChatEvent(socket, activeChats); // socket event listen for join
         
         socket.on(ChatEventEnum.DISCONNECT_EVENT, async () => {
             // disconneted
+            onlineUsers.delete(socket.userId!); // make him offline if not connected
+
+            activeChats.delete(socket.userId!);
+
+            for(const chatId of activeChats.keys()) {
+                const activeUsersInRoom = activeChats.get(chatId);
+                if(activeUsersInRoom && activeUsersInRoom.has(socket.userId!)) {
+                    activeUsersInRoom.delete(socket.userId!); // remove users form the joined chat
+                    socket.leave(chatId); // leave the room
+                }
+            }
+
+            io.emit(ChatEventEnum.ONLINE_USERS_LIST_CHANGE, Array.from(onlineUsers));
         });
     });
 
