@@ -57,6 +57,9 @@ export function connectSocket(httpServer: http.Server) {
             credentials: true
         }
     });
+
+    console.log(process.env.CORS_ORIGIN);
+    
     
     io.use((socket: IAuthSocket, next) => {
         try {
